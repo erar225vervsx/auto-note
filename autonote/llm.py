@@ -24,6 +24,9 @@ GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:ge
 GEMINI_MIN_INTERVAL = float(os.environ.get("GEMINI_MIN_INTERVAL", "15"))
 _last_gemini = 0.0
 _thinking_supported = True
+# 混雑・失敗時に切り替える予備モデル(カンマ区切りで環境変数から変更可)
+FALLBACK_MODELS = [m for m in os.environ.get(
+    "GEMINI_FALLBACK_MODELS", "gemini-flash-lite-latest").split(",") if m]
 
 
 class LLMError(RuntimeError):
@@ -36,15 +39,18 @@ def complete(prompt: str, *, model: str, system: str = "", max_tokens: int = 400
         from . import fake_llm
         return fake_llm.respond(prompt, system)
 
-    call = _gemini if model.startswith("gemini") else _anthropic
+    # 無料枠は混雑で失敗しやすいので、失敗したら予備のモデルと交互に試す
+    models = [model] + [m for m in FALLBACK_MODELS if m != model and model.startswith("gemini")]
     last = None
     for i in range(retries):
+        m = models[i % len(models)]
+        call = _gemini if m.startswith("gemini") else _anthropic
         try:
-            return call(prompt, model, system, max_tokens, temperature, json_mode)
+            return call(prompt, m, system, max_tokens, temperature, json_mode)
         except Exception as e:  # noqa: BLE001
             last = e
-            wait = 20 * (2 ** i)
-            log.warning("AI 呼び出し失敗(%s)。%s秒後に再試行", e, wait)
+            wait = 15 * (i + 1)
+            log.warning("AI 呼び出し失敗(%s: %s)。%s秒後に再試行", m, str(e)[:200], wait)
             time.sleep(wait)
     raise LLMError(f"AI 呼び出しに失敗しました: {last}")
 
@@ -69,12 +75,12 @@ def _gemini(prompt, model, system, max_tokens, temperature, json_mode) -> str:
         body["generationConfig"]["thinkingConfig"] = {"thinkingLevel": "low"}
     headers = {"x-goog-api-key": env("GEMINI_API_KEY"), "content-type": "application/json"}
     t0 = time.time()
-    r = requests.post(GEMINI_URL.format(model=model), json=body, timeout=180, headers=headers)
+    r = requests.post(GEMINI_URL.format(model=model), json=body, timeout=120, headers=headers)
     if r.status_code == 400 and _thinking_supported and "thinking" in r.text.lower():
         # 思考レベルの指定に対応していないモデルなら、指定なしでやり直す
         _thinking_supported = False
         body["generationConfig"].pop("thinkingConfig", None)
-        r = requests.post(GEMINI_URL.format(model=model), json=body, timeout=180, headers=headers)
+        r = requests.post(GEMINI_URL.format(model=model), json=body, timeout=120, headers=headers)
     log.info("Gemini %s: %s (%.0f秒)", model, r.status_code, time.time() - t0)
     if r.status_code in (429, 500, 502, 503, 504):
         raise LLMError(f"retryable {r.status_code}: {r.text[:200]}")
