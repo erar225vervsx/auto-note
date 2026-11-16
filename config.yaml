@@ -27,8 +27,9 @@ strategy:
 
 # 執筆
 writing:
-  model: claude-sonnet-5-5       # 執筆・レビューに使うモデル
-  research_model: claude-haiku-5-5  # 調査の要約など軽い処理
+  # 執筆・レビューに使うモデル。gemini-* は無料枠(GEMINI_API_KEY)、claude-* は従量課金(ANTHROPIC_API_KEY)
+  model: gemini-flash-latest
+  research_model: gemini-flash-lite-latest  # 調査の要約など軽い処理
   min_chars: 3000
   max_chars: 7000
   tone: "です・ます調。読者の悩みに寄り添い、具体例と手順を必ず入れる"
@@ -57,9 +58,8 @@ sns:
     posts_per_article: 2     # 告知1本 + 切り口を変えた投稿1本
   instagram:
     enabled: true
-    # Instagram は画像のURLが公開されている必要がある。
-    # GitHub Pages 等で public/images を公開し、そのURLを書く
-    image_base_url: ""       # 例: https://<user>.github.io/auto-note/images
+    # Instagram は画像のURLが公開されている必要がある(公開リポジトリの raw URL を使う)
+    image_base_url: "https://raw.githubusercontent.com/erar225vervsx/auto-note/main/public/images"
   api_version_facebook: "v21.0"
 
 # 調査

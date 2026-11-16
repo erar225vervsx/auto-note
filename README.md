@@ -7,9 +7,9 @@ GitHub Actions 上で毎日自動で回すシステムです。
 
 | 段階 | 何をするか | 使うもの |
 |---|---|---|
-| 1. 戦略選定(30日ごと) | AIがジャンル候補6つと収益モデル(有料記事 / アフィリエイト / 無料で集客)の仮説を出し、note上の実データ(上位記事のスキ数、有料記事の比率と価格、記事数)で比べて1つに決める。2回目以降は自分の記事の実績も判断材料にする | Claude API、note検索 |
+| 1. 戦略選定(30日ごと) | AIがジャンル候補6つと収益モデル(有料記事 / アフィリエイト / 無料で集客)の仮説を出し、note上の実データ(上位記事のスキ数、有料記事の比率と価格、記事数)で比べて1つに決める。2回目以降は自分の記事の実績も判断材料にする | Gemini API(無料枠)、note検索 |
 | 2. 需要調査(ネタが3本未満のとき) | 選んだジャンルでキーワードを広げて検索し、「需要があるのに上位記事が答えきれていない切り口」を記事案として点数付きで積む | 同上 |
-| 3. 執筆 | 構成案 → 本文 → 厳しめの編集長役が採点 → 基準(75点)未満なら1回改稿 → それでも未満なら公開しない | Claude API |
+| 3. 執筆 | 構成案 → 本文 → 厳しめの編集長役が採点 → 基準(75点)未満なら1回改稿 → それでも未満なら公開しない | Gemini API(無料枠) |
 | 4. note公開 | 編集画面をブラウザ自動操作して、タイトル・本文・見出し画像・ハッシュタグを入れて公開 | Playwright |
 | 5. SNS | Threads に告知1本+要点1本。Instagram に要点カード(縦長画像)をカルーセル投稿 | Threads API、Instagram API |
 | 6. 成果取り込み | 自分の記事のスキ・コメント数を取得し、次の戦略選定とネタ選びに使う。週1でレポートを通知 | note公開データ |
@@ -26,7 +26,7 @@ GitHub Actions 上で毎日自動で回すシステムです。
 ## セットアップ(初回だけ・人がやる作業)
 
 1. **GitHubにリポジトリを作る**(非公開でOK)。このフォルダの中身を push する。
-2. **Claude APIキー**を取得し、Secrets の `ANTHROPIC_API_KEY` に登録。
+2. **Gemini APIキー(無料)**を Google AI Studio(https://aistudio.google.com/apikey)で作成し、Secrets の `GEMINI_API_KEY` に登録。支払い設定はしないこと(無料枠のまま使うため)。
 3. **noteのログイン状態を保存**:手元のPCで
    ```
    pip install playwright && playwright install chromium
@@ -36,7 +36,7 @@ GitHub Actions 上で毎日自動で回すシステムです。
    Variables の `NOTE_URLNAME` に note のID(`https://note.com/<ここ>`)を登録。
 4. **Threads**:Meta for Developers でアプリを作り、Threads API(`threads_basic`, `threads_content_publish`)を追加 → 長期アクセストークンを発行。Secrets に `THREADS_USER_ID` / `THREADS_ACCESS_TOKEN`。
 5. **Instagram**:プロアカウント(ビジネス or クリエイター)に切り替え、Instagram API(Instagramログイン)で `instagram_business_basic`, `instagram_business_content_publish` を許可した長期トークンを発行。Secrets に `IG_USER_ID` / `IG_ACCESS_TOKEN`。
-6. **Instagram用の画像の置き場所**:Instagramは「誰でも開ける画像URL」しか受け付けません。いちばん簡単なのは、画像だけを置く公開リポジトリか GitHub Pages を用意し、そのURLを Variables の `IMAGE_BASE_URL` に入れることです(例: `https://<user>.github.io/auto-note/images`)。
+6. **Instagram用の画像の置き場所**:Instagramは「誰でも開ける画像URL」しか受け付けないため、このリポジトリは公開にし、`config.yaml` の `sns.instagram.image_base_url` に raw URL を設定済み。
 7. **トークンの自動更新用**:Secrets 書き込み権限のある GitHub の Personal Access Token を `GH_PAT` に登録(Threads/Instagramのトークンは60日で切れるため、月2回自動で更新します)。
 8. (任意)Discord / Slack の Webhook URL を `NOTIFY_WEBHOOK_URL` に登録。
 9. **試運転**:Actions → autonote → Run workflow で `command=strategy`, `dry_run=true` → 次に `command=run`, `dry_run=true`。`state/drafts/` に記事、`state/strategy.json` に選ばれたジャンルが入るので確認する。
@@ -58,7 +58,7 @@ GitHub Actions 上で毎日自動で回すシステムです。
 | `run.min_quality_score` | 自己レビューの合格点 |
 | `strategy.fixed_genre` | ジャンルを固定したいときだけ書く(空ならAIが選ぶ) |
 | `strategy.review_interval_days` | 戦略を見直す間隔 |
-| `writing.model` | 執筆に使うモデル |
+| `writing.model` | 執筆に使うモデル(gemini-* は無料枠、claude-* は有料) |
 | `note.paid_mode` | 有料記事を下書き止めにするか、自動公開するか |
 
 ## ファイル構成
@@ -82,5 +82,6 @@ tests/test_dryrun.py        外部接続なしで全段を通すテスト
 ## 費用の目安
 
 - GitHub Actions:非公開リポジトリでも無料枠内に収まる想定(1日1回・数分〜十数分)
-- Claude API:1記事あたり構成・本文・レビュー・改稿・SNS文面で数回の呼び出し。モデルと文字数次第なので、最初の1週間の利用額を見て `writing.model` を調整してください
+- Gemini API:無料枠のFlash系モデルを使うので0円。1日あたり5〜10回ほどの呼び出しで、無料枠の範囲に収まる想定。無料枠では送った内容がGoogleのサービス改善に使われることがある。上限に当たった日は記事の生成が翌日に回る
+- 品質を上げたくなったら `writing.model` を `claude-sonnet-5-5` などに変え、`ANTHROPIC_API_KEY` を登録すると有料のClaude APIに切り替わる
 - Threads / Instagram API:無料
