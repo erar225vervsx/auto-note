@@ -25,7 +25,7 @@ strategy:
     - AIが一次情報なしで書いても価値が出るテーマを優先する
     - 継続的に記事ネタが出るジャンルを優先する
 
-# 執筆
+# 執筆(note への公開は手動。記事ができると「公開待ち」Issue が作られる)
 writing:
   # 執筆・レビューに使うモデル。gemini-* は無料枠(GEMINI_API_KEY)、claude-* は従量課金(ANTHROPIC_API_KEY)
   model: gemini-flash-latest
@@ -41,16 +41,6 @@ writing:
     この記事はAIを活用して作成し、公開前に自動チェックを行っています。
     内容の誤りに気づいた場合はコメントで教えてください。
 
-# note
-note:
-  urlname: ""               # あなたの note の ID (https://note.com/<ここ>)
-  editor_url: "https://editor.note.com/new"
-  headless: true
-  # 公開時間帯の揺らぎ(分)。毎回同じ時刻にならないようにする
-  jitter_minutes: 40
-  # 有料記事の扱い。draft_only: 下書き保存して通知(推奨) / publish: 有料設定まで自動(実験的)
-  paid_mode: draft_only
-
 # SNS
 sns:
   threads:
@@ -61,9 +51,3 @@ sns:
     # Instagram は画像のURLが公開されている必要がある(公開リポジトリの raw URL を使う)
     image_base_url: "https://raw.githubusercontent.com/erar225vervsx/auto-note/main/public/images"
   api_version_facebook: "v21.0"
-
-# 調査
-research:
-  seed_count: 8             # 1ジャンルあたり調べるキーワード数
-  results_per_query: 20
-  request_interval_sec: 2.0 # note への問い合わせ間隔(負荷をかけない)
