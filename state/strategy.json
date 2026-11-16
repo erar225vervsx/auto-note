@@ -1,0 +1,508 @@
+{
+  "genre": "AIプロンプトエンジニアリング・業務効率化",
+  "monetization": "paid_article",
+  "reason": "AIの進化に伴う最新のプロンプトや業務効率化の需要は常に高く、AI自身が検証・執筆を行えるため一次情報なしでも高品質なコンテンツを量産できる。すべてのシグナルで機会スコアが均等に確保されており、安定した継続運用が見込める。",
+  "persona": "日々の業務を効率化したいビジネスパーソン、生成AIの活用法を模索している会社員・フリーランス",
+  "pillars": [
+    "ChatGPT・Claudeの実践的プロンプト集",
+    "日常業務（議事録・メール・資料作成）の自動化",
+    "Notion AI等を活用したナレッジ管理術",
+    "最新AIツールの比較と導入ステップ"
+  ],
+  "free_paid_mix": "無料記事で基本的な活用法や概要を解説して広く集客し、具体的なテンプレートやコピペで使える高度なプロンプト集を有料記事として販売する。",
+  "sns_angle": "ThreadsやInstagramでは「コピペで使える時短プロンプト」や「作業時間が半分になる裏技」をスライド形式や短文で視覚的に訴求し、noteへの導線を作る。",
+  "avoid": [
+    "検証していない不確実な噂レベルのAI情報の拡散",
+    "単なるツールの公式サイトの和訳に終始する内容",
+    "再現性の低い個人の特殊な環境に依存したノウハウ"
+  ],
+  "decided_at": "2026-11-16T18:03:51.194884+09:00",
+  "evidence": [
+    {
+      "genre": "AIプロンプトエンジニアリング・業務効率化",
+      "monetization": "paid_article",
+      "reason": "AIの進化に伴い最新のプロンプトや活用術の需要が常になくならず、AI自身が記事を作成・検証できるため一次情報なしでも高い価値を提供できる。",
+      "probe_keywords": [
+        "ChatGPT 業務効率化",
+        "Claude プロンプト",
+        "AI 議事録 自動化",
+        "Notion AI 活用術",
+        "Copilot 使い方",
+        "プロンプト テンプレート"
+      ],
+      "signals": [
+        {
+          "keyword": "ChatGPT 業務効率化",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "Claude プロンプト",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "AI 議事録 自動化",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "Notion AI 活用術",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "Copilot 使い方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "プロンプト テンプレート",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        }
+      ]
+    },
+    {
+      "genre": "Notion・デジタルツールによるタスク管理術",
+      "monetization": "paid_article",
+      "reason": "テンプレートの設計図や構築手順をテキストと構造化データで分かりやすく解説でき、ツール自体のアップデートに伴い継続的なネタ供給が見込める。",
+      "probe_keywords": [
+        "Notion テンプレート 自作",
+        "タスク管理 アプリ 比較",
+        "Obsidian 使い方",
+        "デジタル手帳 作り方",
+        "P.K.T.法 タスク管理",
+        "仕事 効率化 ツール"
+      ],
+      "signals": [
+        {
+          "keyword": "Notion テンプレート 自作",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "タスク管理 アプリ 比較",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "Obsidian 使い方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "デジタル手帳 作り方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "P.K.T.法 タスク管理",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "仕事 効率化 ツール",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        }
+      ]
+    },
+    {
+      "genre": "Webライティング・SEO記事構成テンプレート",
+      "monetization": "paid_article",
+      "reason": "文章術や構成案のフレームワークは普遍的かつ論理的なため、AIによる高品質な解説記事の量産が可能。副業層からの需要も安定している。",
+      "probe_keywords": [
+        "Webライティング 構成案",
+        "SEO 記事 書き方",
+        "セールスライティング テンプレート",
+        "文章構成 フレームワーク",
+        "ブログ 記事ネタ 探し方",
+        "リライト 手順"
+      ],
+      "signals": [
+        {
+          "keyword": "Webライティング 構成案",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "SEO 記事 書き方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "セールスライティング テンプレート",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "文章構成 フレームワーク",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "ブログ 記事ネタ 探し方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "リライト 手順",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        }
+      ]
+    },
+    {
+      "genre": "個人開発・ノーコードツールでのミニアプリ制作",
+      "monetization": "paid_article",
+      "reason": "BubbleやFlutterFlow、Makeなどのノーコードツールに関する手順書は需要が高く、エラー解決策や連携レシピなどネタが尽きない。",
+      "probe_keywords": [
+        "Bubble 使い方",
+        "FlutterFlow 入門",
+        "Make 連携 自動化",
+        "Zapier 代替 ノーコード",
+        "個人開発 アイデア",
+        "Webアプリ 自作 ツール"
+      ],
+      "signals": [
+        {
+          "keyword": "Bubble 使い方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "FlutterFlow 入門",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "Make 連携 自動化",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "Zapier 代替 ノーコード",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "個人開発 アイデア",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "Webアプリ 自作 ツール",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        }
+      ]
+    },
+    {
+      "genre": "思考法・フレームワークを活用した課題解決",
+      "monetization": "paid_article",
+      "reason": "ビジネス書や心理学の知見を構造化して解説するジャンル。普遍的なテーマであり、AIの高度な要約・構成力によって説得力のある記事を継続生産できる。",
+      "probe_keywords": [
+        "ロジカルシンキング 鍛え方",
+        "フレームワーク ビジネス",
+        "問題解決 思考法",
+        "意思決定 プロセス",
+        "メタ認知 高め方",
+        "第一原理思考"
+      ],
+      "signals": [
+        {
+          "keyword": "ロジカルシンキング 鍛え方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "フレームワーク ビジネス",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "問題解決 思考法",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "意思決定 プロセス",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "メタ認知 高め方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "第一原理思考",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        }
+      ]
+    },
+    {
+      "genre": "Kindle出版・電子書籍マーケティングノウハウ",
+      "monetization": "paid_article",
+      "reason": "個人出版のプロセスや表紙デザインのコツ、Amazonアルゴリズムの考察など、ノウハウの展開がしやすく、副業に関心を持つ読者層から継続的に購入されやすい。",
+      "probe_keywords": [
+        "Kindle出版 やり方",
+        "KDP マーケティング",
+        "電子書籍 表紙 作り方",
+        "Amazon ランキング 上位",
+        "個人出版 印税 生活",
+        "KDP セール 戦略"
+      ],
+      "signals": [
+        {
+          "keyword": "Kindle出版 やり方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "KDP マーケティング",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "電子書籍 表紙 作り方",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "Amazon ランキング 上位",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "個人出版 印税 生活",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        },
+        {
+          "keyword": "KDP セール 戦略",
+          "total_articles": 0,
+          "top10_avg_likes": 0,
+          "median_likes": 0,
+          "recent_avg_likes": 0,
+          "paid_ratio": 0.0,
+          "paid_avg_price": 0,
+          "paid_avg_likes": 0,
+          "opportunity": 30.0
+        }
+      ]
+    }
+  ]
+}
