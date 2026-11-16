@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 90
     env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
       NOTE_STORAGE_STATE: ${{ secrets.NOTE_STORAGE_STATE }}
       NOTE_URLNAME: ${{ vars.NOTE_URLNAME }}
