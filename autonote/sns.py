@@ -124,7 +124,8 @@ def refresh_ig_token() -> str:
 def promote(article: dict, url: str | None, slug: str, strategy: dict, cfg: dict) -> None:
     sc = cfg["sns"]
     dry = cfg["run"]["dry_run"]
-    copy = make_copy(article, url, strategy, cfg)
+    # 執筆時に用意された文面があればそれを使い、なければ AI で作る
+    copy = article.get("sns") or make_copy(article, url, strategy, cfg)
     history = sns_store.load()
 
     if sc["threads"]["enabled"]:

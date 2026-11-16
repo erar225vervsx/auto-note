@@ -1,8 +1,10 @@
 name: autonote
 
 on:
+  push:
+    branches: [main]
+    paths: ["inbox/*.json"]  # Claude の定期タスクが記事を置いたら「公開待ち」Issue を作る
   schedule:
-    - cron: "23 10 * * *"     # 毎日 19:23 JST: 調査→執筆→「公開待ち」Issue 作成
     - cron: "47 0 * * 1"      # 毎週月曜 9:47 JST: 週次レポート
     - cron: "11 3 1,15 * *"   # 毎月1日・15日 12:11 JST: SNSトークン更新
   issue_comment:
@@ -10,7 +12,7 @@ on:
   workflow_dispatch:
     inputs:
       command:
-        description: "run / strategy / report / instagram / refresh-tokens"
+        description: "ingest / report / instagram / refresh-tokens / run(予備: Gemini で執筆) / strategy"
         default: "run"
       dry_run:
         description: "true なら Issue 作成・SNS投稿をせずに生成物だけ作る"
@@ -64,9 +66,11 @@ jobs:
         env:
           INPUT_COMMAND: ${{ github.event.inputs.command }}
         run: |
-          case "$INPUT_COMMAND" in run|strategy|report|instagram|refresh-tokens|"") ;; *) echo "unknown command"; exit 1;; esac
+          case "$INPUT_COMMAND" in ingest|run|strategy|report|instagram|refresh-tokens|"") ;; *) echo "unknown command"; exit 1;; esac
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "c=$INPUT_COMMAND" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "push" ]; then
+            echo "c=ingest" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "issue_comment" ]; then
             echo "c=promote" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "47 0 * * 1" ]; then
@@ -74,7 +78,7 @@ jobs:
           elif [ "${{ github.event.schedule }}" = "11 3 1,15 * *" ]; then
             echo "c=refresh-tokens" >> "$GITHUB_OUTPUT"
           else
-            echo "c=run" >> "$GITHUB_OUTPUT"
+            echo "c=ingest" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Run
@@ -85,7 +89,7 @@ jobs:
         run: |
           git config user.name "autonote-bot"
           git config user.email "autonote-bot@users.noreply.github.com"
-          git add state public
+          git add -A state public inbox
           git diff --cached --quiet || git commit -m "autonote: ${{ steps.cmd.outputs.c }} $(date -u +%F)"
           git push
 

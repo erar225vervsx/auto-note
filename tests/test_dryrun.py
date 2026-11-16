@@ -16,7 +16,7 @@ def test_full_flow():
     tmp = Path(tempfile.mkdtemp())
     os.environ.update(AUTONOTE_FAKE_LLM="1", AUTONOTE_FAKE_SNS="1", AUTONOTE_FAKE_GH="1",
                       AUTONOTE_STATE_DIR=str(tmp / "state"), AUTONOTE_PUBLIC_DIR=str(tmp / "public"),
-                      DRY_RUN="0")
+                      AUTONOTE_INBOX_DIR=str(tmp / "inbox"), DRY_RUN="0")
     from autonote import pipeline, sns
     from autonote.core import load_config
 
@@ -52,8 +52,26 @@ def test_full_flow():
     cfg = load_config()
     assert sns.flush_instagram(cfg) == 1
 
-    # 4. レポート
+    # 4. Claude の定期タスクが inbox に置いた記事を取り込む
+    (tmp / "inbox").mkdir()
+    (tmp / "inbox" / "a.json").write_text(json.dumps({
+        "title": "受け口テスト", "body_md": "導入\n\n## 見出し\n\n本文", "tags": ["#AI"],
+        "format": "free", "review_score": 85,
+        "sources": [{"title": "出典", "url": "https://example.com"}],
+        "sns": {"threads_posts": ["告知", "要点"], "ig_points": ["a", "b"], "ig_caption": "c", "ig_cta": "d"},
+    }, ensure_ascii=False), encoding="utf-8")
+    assert pipeline.main(["x", "ingest"]) == 0
+    assert not list((tmp / "inbox").glob("*.json"))
+    rec = json.loads((st / "articles.json").read_text())[-1]
+    assert rec["status"] == "awaiting_publish" and rec["data_backed"] is True and rec["sns"]["ig_cta"] == "d"
+    draft = (st / "drafts" / f"{rec['slug']}.md").read_text()
+    assert "AIを活用して作成" in draft  # 定型文が付く
+    body2 = pipeline.issue_body({**rec, "body_md": "x"}, rec["slug"], rec["eyecatch"], load_config(), True)
+    assert "調査の出典" in body2 and "https://example.com" in body2
+
+    # 5. レポート
     assert pipeline.main(["x", "report"]) == 0
+    assert "公開待ち: 1本" in (st / "report.md").read_text()
     assert "公開記事: 1本" in (st / "report.md").read_text()
     print("OK:", tmp)
 
