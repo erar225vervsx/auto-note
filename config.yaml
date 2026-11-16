@@ -41,6 +41,11 @@ writing:
     この記事はAIを活用して作成し、公開前に自動チェックを行っています。
     内容の誤りに気づいた場合はコメントで教えてください。
 
+# note(公開は手動)
+note:
+  urlname: ai_kakunin        # https://note.com/ai_kakunin
+  creator_name: "AIチェック係｜生成AIを仕事で正しく使う"
+
 # SNS
 sns:
   threads:
