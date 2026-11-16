@@ -1,72 +1,91 @@
 """市場調査・需要調査。
 
+note は GitHub などのサーバーからの機械的なアクセスを拒否しているため、note を直接は調べない。
+代わりに Gemini API の公式機能「Google 検索によるグラウンディング」で公開情報を調べる
+(Google に載っている note 記事・Q&A・SNS の話題なども含む)。結果には出典URLが付く。
+
 1. 戦略選定(select_strategy): AI がジャンル候補と収益モデル仮説を出し、
-   note 上の実データ(スキ数・有料記事の比率と価格・記事数)で裏付けて1つに絞る。
-2. 需要調査(build_backlog): 選んだジャンルでキーワードを広げて調べ、
-   「需要はあるが良い記事が少ない」切り口を記事ネタの候補として積む。
+   候補ごとに検索で需要・競合・有料記事の相場を調べて1つに絞る。
+2. 需要調査(build_backlog): 選んだジャンルで読者の悩み・答えきれていない切り口を検索で集め、
+   記事ネタの候補として積む。
+
+検索が使えない場合は AI の知識だけで決め、data_backed=False として記録・通知する。
 """
 from __future__ import annotations
 
 import datetime as dt
 import json
-import statistics
-from typing import Any
 
-from . import llm, note_api
-from .core import (articles_store, log, metrics_store, now, research_store,
-                   strategy_store)
+from . import llm
+from .core import articles_store, log, metrics_store, now, research_store, strategy_store
+
+STRATEGY_VERSION = 2
+
+STRATEGY_SYSTEM = (
+    "あなたは note でのコンテンツ事業の戦略担当です。"
+    "推測と事実を区別し、調べて分かったことを根拠に判断します。"
+    "AIが継続的に高品質な記事を書けるジャンルを選びます。"
+)
+
+RESEARCH_SYSTEM = (
+    "あなたは市場調査の担当です。Google 検索で実際に調べ、見つけた事実だけを書きます。"
+    "見つからないことは推測で埋めず、不明と書きます。"
+)
 
 
 # ------------------------------------------------------------------
-# 指標計算
+# 検索つき調査
 # ------------------------------------------------------------------
-def keyword_signals(keyword: str, cfg: dict) -> dict:
-    rc = cfg["research"]
-    popular = note_api.search_notes(keyword, size=rc["results_per_query"], sort="popular",
-                                    interval=rc["request_interval_sec"])
-    new = note_api.search_notes(keyword, size=rc["results_per_query"], sort="new",
-                                interval=rc["request_interval_sec"])
-    likes = [n["likes"] for n in popular] or [0]
-    paid = [n for n in popular if n["price"] > 0]
-    recent_likes = [n["likes"] for n in new] or [0]
-    total = popular[0]["query_total"] if popular else 0
-    top = sorted(likes, reverse=True)[:10]
-    return {
-        "keyword": keyword,
-        "total_articles": total,
-        "top10_avg_likes": round(statistics.mean(top), 1),
-        "median_likes": statistics.median(likes),
-        "recent_avg_likes": round(statistics.mean(recent_likes), 1),
-        "paid_ratio": round(len(paid) / max(len(popular), 1), 2),
-        "paid_avg_price": round(statistics.mean([p["price"] for p in paid]), 0) if paid else 0,
-        "paid_avg_likes": round(statistics.mean([p["likes"] for p in paid]), 1) if paid else 0,
-        # 上位記事のタイトルは「切り口の重複を避ける」ためだけに使う(本文は取得しない)
-        "top_titles": [n["title"] for n in popular[:8]],
-        "opportunity": opportunity_score(top, recent_likes, total),
-    }
+def web_research(prompt: str, cfg: dict) -> tuple[dict, list[dict]]:
+    """Google 検索つきで調べ、(JSON結果, 出典) を返す。検索が使えなければ SearchUnavailable。"""
+    llm.last_sources = []
+    result = llm.complete_json(prompt, model=cfg["writing"]["model"], system=RESEARCH_SYSTEM,
+                               search=True, max_tokens=4000)
+    sources = [s for s in llm.last_sources if s.get("url")]
+    return result, sources
 
 
-def opportunity_score(top_likes: list[int], recent_likes: list[int], total: int) -> float:
-    """需要(上位のスキ数・新着の反応)が高く、競合(記事数)が少ないほど高い。0〜100。"""
-    import math
-    demand = math.log1p(statistics.mean(top_likes or [0])) * 12
-    freshness = math.log1p(statistics.mean(recent_likes or [0])) * 10
-    competition = math.log1p(total) * 3
-    return round(max(0.0, min(100.0, demand + freshness - competition + 30)), 1)
+def assess_genre(genre: str, cfg: dict) -> dict:
+    """1ジャンルの需要・競合・相場を調べる。"""
+    prompt = (
+        f"ジャンル「{genre}」について、日本の note(note.com)で記事を出す場合の市場を Google 検索で調べてください。\n"
+        "調べること: 読者が実際に困っていること・よく検索される疑問、note 上の人気記事や有料記事の例と価格帯、"
+        "同じテーマの書き手の多さ(競合)、ここ1年の話題の伸び。\n"
+        '形式: {"demand": 1〜10, "competition": 1〜10, "trend": "up|flat|down",'
+        ' "reader_questions": ["..."], "paid_examples": [{"title": "...", "price": 数値またはnull}],'
+        ' "evidence": "根拠を3文以内", "unknowns": "調べても分からなかったこと"}'
+    )
+    try:
+        data, sources = web_research(prompt, cfg)
+        data["sources"] = sources[:8]
+        data["data_backed"] = bool(sources)
+    except llm.SearchUnavailable as e:
+        log.warning("検索つき調査が使えないため、AIの知識だけで評価します: %s", e)
+        data = llm.complete_json(prompt.replace("Google 検索で調べてください", "あなたの知識で評価してください"),
+                                 model=cfg["writing"]["model"], system=RESEARCH_SYSTEM)
+        data["sources"] = []
+        data["data_backed"] = False
+    data["opportunity"] = opportunity_score(data)
+    return data
+
+
+def opportunity_score(d: dict) -> float:
+    """需要が高く、競合が少なく、伸びているほど高い。0〜100。"""
+    try:
+        demand = float(d.get("demand", 5))
+        comp = float(d.get("competition", 5))
+    except (TypeError, ValueError):
+        demand, comp = 5.0, 5.0
+    trend = {"up": 8, "flat": 0, "down": -8}.get(str(d.get("trend", "flat")), 0)
+    return round(max(0.0, min(100.0, demand * 6 + (10 - comp) * 4 + trend)), 1)
 
 
 # ------------------------------------------------------------------
 # 戦略選定
 # ------------------------------------------------------------------
-STRATEGY_SYSTEM = (
-    "あなたは note でのコンテンツ事業の戦略担当です。"
-    "データに基づいて判断し、AIが継続的に高品質な記事を書けるジャンルを選びます。"
-)
-
-
 def strategy_due(cfg: dict) -> bool:
     s = strategy_store.load()
-    if not s:
+    if not s or s.get("version") != STRATEGY_VERSION:
         return True
     decided = dt.datetime.fromisoformat(s["decided_at"])
     return now() - decided > dt.timedelta(days=cfg["strategy"]["review_interval_days"])
@@ -79,50 +98,47 @@ def select_strategy(cfg: dict) -> dict:
     perf = _own_performance_summary()
 
     if sc.get("fixed_genre"):
-        candidates = [{"genre": sc["fixed_genre"], "monetization": sc["monetization"],
-                       "probe_keywords": []}]
-        probe = llm.complete_json(
-            f"ジャンル「{sc['fixed_genre']}」の需要を測るための note 検索キーワードを"
-            f"6個、JSON配列で出してください。", model=model)
-        candidates[0]["probe_keywords"] = probe[:6]
+        candidates = [{"genre": sc["fixed_genre"], "monetization": sc["monetization"]}]
     else:
         candidates = llm.complete_json(
-            "note で記事を継続販売・発信するためのジャンル候補を6つ提案してください。\n"
+            "note で記事を継続販売・発信するためのジャンル候補を5つ提案してください。\n"
             f"制約: {json.dumps(sc['constraints'], ensure_ascii=False)}\n"
             f"収益モデルの指定: {sc['monetization']}(auto なら各候補で最適なものを仮説として選ぶ)\n"
-            f"前回の戦略: {json.dumps(prev, ensure_ascii=False)[:1500] if prev else 'なし'}\n"
+            f"前回の戦略: {json.dumps({k: prev.get(k) for k in ('genre', 'monetization', 'reason')}, ensure_ascii=False) if prev else 'なし'}\n"
             f"自分の記事の実績: {perf}\n"
-            '形式: [{"genre": "...", "monetization": "paid_article|affiliate|free_audience",'
-            ' "reason": "...", "probe_keywords": ["検索語", ...6個]}]',
-            model=model, system=STRATEGY_SYSTEM)
+            '形式: [{"genre": "...", "monetization": "paid_article|affiliate|free_audience", "reason": "..."}]',
+            model=model, system=STRATEGY_SYSTEM)[:5]
 
     evidence = []
     for c in candidates:
-        sigs = [keyword_signals(k, cfg) for k in c["probe_keywords"][:6]]
-        sigs = [{k: v for k, v in s.items() if k != "top_titles"} for s in sigs]
-        evidence.append({**c, "signals": sigs})
-        log.info("候補 %s: 平均機会スコア %.1f", c["genre"],
-                 statistics.mean([s["opportunity"] for s in sigs] or [0]))
+        a = assess_genre(c["genre"], cfg)
+        evidence.append({**c, "assessment": a})
+        log.info("候補 %s: 機会スコア %.1f(根拠あり=%s)", c["genre"], a["opportunity"], a["data_backed"])
 
     decision = llm.complete_json(
-        "以下はジャンル候補と、note 上で実際に検索して得た指標です。\n"
-        "指標の意味: top10_avg_likes=上位記事の平均スキ, paid_ratio=上位に占める有料記事の割合,"
-        " paid_avg_price=有料記事の平均価格, total_articles=記事数(競合の多さ), opportunity=機会スコア\n"
-        f"{json.dumps(evidence, ensure_ascii=False)}\n\n"
+        "以下はジャンル候補と、Google 検索で調べた評価(出典付き)です。\n"
+        "demand=需要, competition=競合の多さ, trend=話題の伸び, opportunity=機会スコア, "
+        "data_backed=検索の根拠があるか\n"
+        f"{json.dumps(evidence, ensure_ascii=False)[:20000]}\n\n"
         f"自分の記事の実績: {perf}\n"
-        "最も収益と継続性が見込める組み合わせを1つ選び、運用方針を決めてください。\n"
+        "最も収益と継続性が見込める組み合わせを1つ選び、運用方針を決めてください。"
+        "根拠のある候補を優先すること。\n"
         "収益モデルは paid_article(有料記事), affiliate(記事内で商品紹介), "
         "free_audience(無料記事でフォロワーを増やす) から選ぶこと。\n"
-        '形式: {"genre": "...", "monetization": "...", "reason": "データを根拠に3文以内",'
+        '形式: {"genre": "...", "monetization": "...", "reason": "調査結果を根拠に3文以内",'
         ' "persona": "想定読者", "pillars": ["記事の柱となるテーマ", ...3〜5個],'
         ' "free_paid_mix": "無料と有料の比率や使い分けの方針",'
         ' "sns_angle": "Threads/Instagram での見せ方の方針", "avoid": ["避けるべき話題"]}',
         model=model, system=STRATEGY_SYSTEM)
 
+    chosen = next((e for e in evidence if e["genre"] == decision.get("genre")), None)
+    decision["data_backed"] = bool(chosen and chosen["assessment"]["data_backed"])
+    decision["version"] = STRATEGY_VERSION
     decision["decided_at"] = now().isoformat()
     decision["evidence"] = evidence
     strategy_store.save(decision)
-    log.info("戦略を決定: %s / %s", decision["genre"], decision["monetization"])
+    log.info("戦略を決定: %s / %s(根拠あり=%s)", decision["genre"], decision["monetization"],
+             decision["data_backed"])
     return decision
 
 
@@ -130,46 +146,41 @@ def select_strategy(cfg: dict) -> dict:
 # 記事ネタの候補づくり
 # ------------------------------------------------------------------
 def build_backlog(cfg: dict, strategy: dict) -> list[dict]:
-    model = cfg["writing"]["research_model"]
     done = [a["title"] for a in articles_store.load()][-60:]
-    keywords = llm.complete_json(
-        f"ジャンル: {strategy['genre']}\n想定読者: {strategy['persona']}\n"
+    prompt = (
+        f"ジャンル「{strategy['genre']}」、想定読者「{strategy['persona']}」について Google 検索で調べ、"
+        "読者が今まさに困っている具体的な疑問と、既存の記事(note を含む)が答えきれていない点を集めてください。\n"
         f"テーマの柱: {json.dumps(strategy['pillars'], ensure_ascii=False)}\n"
-        f"note で読者が検索しそうな具体的なキーワード(2〜3語)を{cfg['research']['seed_count']}個、"
-        "JSON配列で出してください。既に書いた記事と重複しないこと。\n"
-        f"既存記事: {json.dumps(done, ensure_ascii=False)}",
-        model=model)
-
-    signals = [keyword_signals(k, cfg) for k in keywords[: cfg["research"]["seed_count"]]]
-    signals.sort(key=lambda s: s["opportunity"], reverse=True)
-
-    ideas = llm.complete_json(
-        "以下は note での検索結果の指標と、上位記事のタイトルです。\n"
-        f"{json.dumps(signals, ensure_ascii=False)}\n\n"
-        f"ジャンル: {strategy['genre']} / 収益モデル: {strategy['monetization']}\n"
-        f"無料・有料の方針: {strategy.get('free_paid_mix', '')}\n"
         f"避ける話題: {json.dumps(strategy.get('avoid', []), ensure_ascii=False)}\n"
-        f"既に書いた記事: {json.dumps(done, ensure_ascii=False)}\n\n"
-        "需要があるのに上位記事が答えきれていない切り口を探し、記事案を6つ出してください。"
-        "上位記事のタイトルを真似ず、独自の切り口にすること。\n"
-        '形式: [{"title": "仮タイトル", "keyword": "狙う検索語", "angle": "既存記事との差別化",'
-        ' "reader_problem": "読者の悩み", "format": "free|paid", "price": 0,'
-        ' "expected_value": 1〜10}]',
-        model=cfg["writing"]["model"])
+        f"既に書いた記事(重複させない): {json.dumps(done, ensure_ascii=False)}\n"
+        f"収益モデル: {strategy['monetization']} / 無料・有料の方針: {strategy.get('free_paid_mix', '')}\n"
+        "その上で記事案を6つ出してください。既存記事のタイトルや文章を真似ないこと。\n"
+        '形式: {"ideas": [{"title": "仮タイトル", "keyword": "読者が検索しそうな言葉", '
+        '"angle": "既存記事との差別化", "reader_problem": "読者の悩み", "evidence": "需要の根拠",'
+        ' "demand": 1〜10, "competition": 1〜10, "format": "free|paid", "price": 0}]}'
+    )
+    try:
+        data, sources = web_research(prompt, cfg)
+        backed = bool(sources)
+    except llm.SearchUnavailable as e:
+        log.warning("検索つき調査が使えないため、AIの知識だけで記事案を作ります: %s", e)
+        data = llm.complete_json(prompt.replace("Google 検索で調べ、", ""),
+                                 model=cfg["writing"]["model"], system=RESEARCH_SYSTEM)
+        sources, backed = [], False
+    ideas = data.get("ideas", data) if isinstance(data, dict) else data
 
-    sig_by_kw = {s["keyword"]: s for s in signals}
     for i in ideas:
-        s = sig_by_kw.get(i.get("keyword"), {})
-        i["opportunity"] = s.get("opportunity", 50)
-        i["score"] = round(i["opportunity"] * 0.6 + float(i.get("expected_value", 5)) * 4, 1)
+        i["opportunity"] = opportunity_score(i)
+        i["score"] = i["opportunity"]
         i["status"] = "queued"
+        i["data_backed"] = backed
         i["created_at"] = now().isoformat()
 
-    data = research_store.load() or {}
-    backlog = [b for b in data.get("backlog", []) if b.get("status") == "queued"]
+    stored = research_store.load() or {}
+    backlog = [b for b in stored.get("backlog", []) if b.get("status") == "queued"]
     backlog.extend(ideas)
     backlog.sort(key=lambda b: b["score"], reverse=True)
-    research_store.save({"updated_at": now().isoformat(), "signals": signals,
+    research_store.save({"updated_at": now().isoformat(), "sources": sources[:10],
                          "backlog": backlog[:40]})
     return backlog
 
@@ -198,7 +209,7 @@ def _own_performance_summary() -> str:
     arts = m.get("articles", [])
     if not arts:
         return "まだ実績なし"
-    arts = sorted(arts, key=lambda a: a.get("likes", 0), reverse=True)
-    top = [f"{a['title']}(スキ{a['likes']})" for a in arts[:5]]
-    low = [f"{a['title']}(スキ{a['likes']})" for a in arts[-3:]]
+    arts = sorted(arts, key=lambda a: a.get("score", 0), reverse=True)
+    top = [f"{a['title']}(反応{a.get('score', 0)})" for a in arts[:5]]
+    low = [f"{a['title']}(反応{a.get('score', 0)})" for a in arts[-3:]]
     return f"記事数{len(arts)} / 反応が良い: {top} / 反応が弱い: {low}"

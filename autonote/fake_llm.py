@@ -3,20 +3,22 @@ import json
 
 
 def respond(prompt: str, system: str) -> str:
-    if "ジャンル候補を6つ" in prompt:
+    if "ジャンル候補を5つ" in prompt:
         return json.dumps([{"genre": f"ジャンル{i}", "monetization": "paid_article", "reason": "r",
-                            "probe_keywords": [f"kw{i}-{j}" for j in range(3)]} for i in range(2)],
+                            } for i in range(2)],
                           ensure_ascii=False)
+    if "市場を Google 検索で調べて" in prompt or "あなたの知識で評価して" in prompt:
+        return json.dumps({"demand": 7, "competition": 4, "trend": "up", "reader_questions": ["q"],
+                           "paid_examples": [], "evidence": "e", "unknowns": ""}, ensure_ascii=False)
     if "最も収益と継続性" in prompt:
         return json.dumps({"genre": "ジャンル0", "monetization": "free_audience", "reason": "テスト",
                            "persona": "会社員", "pillars": ["柱A", "柱B"], "free_paid_mix": "無料中心",
                            "sns_angle": "要点を図解", "avoid": []}, ensure_ascii=False)
-    if "具体的なキーワード" in prompt:
-        return json.dumps(["キーワードA", "キーワードB", "キーワードC"], ensure_ascii=False)
     if "記事案を6つ" in prompt:
-        return json.dumps([{"title": f"記事案{i}", "keyword": "キーワードA", "angle": "a",
-                            "reader_problem": "p", "format": "free", "price": 0,
-                            "expected_value": 7} for i in range(6)], ensure_ascii=False)
+        return json.dumps({"ideas": [{"title": f"記事案{i}", "keyword": "キーワードA", "angle": "a",
+                                      "reader_problem": "p", "evidence": "e", "demand": 7,
+                                      "competition": 3, "format": "free", "price": 0}
+                                     for i in range(6)]}, ensure_ascii=False)
     if "構成案を作って" in prompt:
         return json.dumps({"title": "テスト記事のタイトル", "lead": "l",
                            "sections": [{"h2": "見出し", "points": ["x"]}],
