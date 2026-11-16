@@ -2,20 +2,23 @@ name: autonote
 
 on:
   schedule:
-    - cron: "23 10 * * *"     # 毎日 19:23 JST: 調査→執筆→公開→SNS
+    - cron: "23 10 * * *"     # 毎日 19:23 JST: 調査→執筆→「公開待ち」Issue 作成
     - cron: "47 0 * * 1"      # 毎週月曜 9:47 JST: 週次レポート
     - cron: "11 3 1,15 * *"   # 毎月1日・15日 12:11 JST: SNSトークン更新
+  issue_comment:
+    types: [created]          # 公開待ち Issue に note の URL がコメントされたら SNS 告知
   workflow_dispatch:
     inputs:
       command:
         description: "run / strategy / report / instagram / refresh-tokens"
         default: "run"
       dry_run:
-        description: "true なら公開・投稿せずに生成物だけ作る"
+        description: "true なら Issue 作成・SNS投稿をせずに生成物だけ作る"
         default: "false"
 
 permissions:
   contents: write
+  issues: write
 
 concurrency:
   group: autonote
@@ -23,20 +26,28 @@ concurrency:
 
 jobs:
   main:
+    # 公開リポジトリなので、Issue コメントでの起動はリポジトリの持ち主のコメントに限る
+    if: >-
+      github.event_name != 'issue_comment' ||
+      (github.event.comment.author_association == 'OWNER' &&
+       contains(github.event.issue.labels.*.name, 'note公開待ち') &&
+       contains(github.event.comment.body, 'note.com/'))
     runs-on: ubuntu-latest
-    timeout-minutes: 90
+    timeout-minutes: 60
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      NOTE_STORAGE_STATE: ${{ secrets.NOTE_STORAGE_STATE }}
-      NOTE_URLNAME: ${{ vars.NOTE_URLNAME }}
       THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
       THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
       IG_USER_ID: ${{ secrets.IG_USER_ID }}
       IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
-      IMAGE_BASE_URL: ${{ vars.IMAGE_BASE_URL }}
       NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
+      # Issue の内容は環境変数で渡す(コマンドに直接埋め込まない)
+      ISSUE_NUMBER: ${{ github.event.issue.number }}
+      ISSUE_BODY: ${{ github.event.issue.body }}
+      COMMENT_BODY: ${{ github.event.comment.body }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -47,13 +58,17 @@ jobs:
         run: |
           sudo apt-get update -qq && sudo apt-get install -y -qq fonts-noto-cjk
           pip install -r requirements.txt
-          python -m playwright install --with-deps chromium
 
       - name: Decide command
         id: cmd
+        env:
+          INPUT_COMMAND: ${{ github.event.inputs.command }}
         run: |
+          case "$INPUT_COMMAND" in run|strategy|report|instagram|refresh-tokens|"") ;; *) echo "unknown command"; exit 1;; esac
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
-            echo "c=${{ github.event.inputs.command }}" >> "$GITHUB_OUTPUT"
+            echo "c=$INPUT_COMMAND" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event_name }}" = "issue_comment" ]; then
+            echo "c=promote" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "47 0 * * 1" ]; then
             echo "c=report" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "11 3 1,15 * *" ]; then
@@ -75,7 +90,7 @@ jobs:
           git push
 
       - name: Post pending Instagram
-        if: success() && steps.cmd.outputs.c == 'run'
+        if: success() && steps.cmd.outputs.c == 'promote'
         run: |
           sleep 90
           python -m autonote.pipeline instagram
@@ -91,10 +106,3 @@ jobs:
             if [ -n "$v" ]; then echo "$v" | gh secret set "$k" --repo "$GITHUB_REPOSITORY"; fi
           done
           rm -f /tmp/new_tokens.json
-
-      - name: Upload failure screenshots
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: screenshots
-          path: state/screenshots
