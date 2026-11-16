@@ -1,508 +1,105 @@
 {
-  "genre": "AIプロンプトエンジニアリング・業務効率化",
+  "version": 2,
+  "decided_at": "2026-11-16T19:00:00+09:00",
+  "genre": "生成AIの業務活用(ChatGPT・Claude等の実務での使い方と確認・運用)",
   "monetization": "paid_article",
-  "reason": "AIの進化に伴う最新のプロンプトや業務効率化の需要は常に高く、AI自身が検証・執筆を行えるため一次情報なしでも高品質なコンテンツを量産できる。すべてのシグナルで機会スコアが均等に確保されており、安定した継続運用が見込める。",
-  "persona": "日々の業務を効率化したいビジネスパーソン、生成AIの活用法を模索している会社員・フリーランス",
+  "reason": "帝国データバンクの2026年調査で生成AI活用企業は34.5%にとどまり、課題は情報の正確性50.4%・ノウハウ不足41.3%・活用すべき業務の範囲40.0%と、実務の使い方への悩みが大きい。総務省白書でも議事録・メール作成補助が日本の業務利用で最も多く、具体的な手順への需要が見込める。noteでもビジネス・副業ノウハウは有料記事の需要が高いジャンルとされ、AIが一次情報なしでも手順・テンプレートで価値を出しやすい。",
+  "persona": "生成AIを業務で使い始めたが、正確性や使いどころに不安がある会社員・フリーランス・小規模事業者",
   "pillars": [
-    "ChatGPT・Claudeの実践的プロンプト集",
-    "日常業務（議事録・メール・資料作成）の自動化",
-    "Notion AI等を活用したナレッジ管理術",
-    "最新AIツールの比較と導入ステップ"
+    "生成AI出力の確認・品質管理の手順",
+    "議事録・メール・資料作成の実務プロンプト",
+    "生成AIを使うべき業務・使わない業務の判断基準",
+    "チーム・小規模組織での運用ルールづくり"
   ],
-  "free_paid_mix": "無料記事で基本的な活用法や概要を解説して広く集客し、具体的なテンプレートやコピペで使える高度なプロンプト集を有料記事として販売する。",
-  "sns_angle": "ThreadsやInstagramでは「コピペで使える時短プロンプト」や「作業時間が半分になる裏技」をスライド形式や短文で視覚的に訴求し、noteへの導線を作る。",
+  "free_paid_mix": "無料記事で悩みの整理と基本手順を解説して読者を集め、業務別のプロンプト集・チェックリスト・運用テンプレートを有料記事(300〜500円中心、まとまった量なら980円)として販売する。最初の数本は無料で反応を見る。",
+  "sns_angle": "Threadsでは『AIの回答で確認すべき箇所』など単体で役立つ短いコツ、Instagramでは手順やチェックリストをカード形式で見せ、noteへ誘導する。誇大な時短効果はうたわない。",
   "avoid": [
-    "検証していない不確実な噂レベルのAI情報の拡散",
-    "単なるツールの公式サイトの和訳に終始する内容",
-    "再現性の低い個人の特殊な環境に依存したノウハウ"
+    "未確認の新機能・料金情報",
+    "『作業時間が半分』など根拠のない効果の断定",
+    "法律・税・医療・投資に関する断定的な助言",
+    "特定ツールの過度な宣伝"
   ],
-  "decided_at": "2026-11-16T18:03:51.194884+09:00",
+  "data_backed": true,
   "evidence": [
     {
-      "genre": "AIプロンプトエンジニアリング・業務効率化",
-      "monetization": "paid_article",
-      "reason": "AIの進化に伴い最新のプロンプトや活用術の需要が常になくならず、AI自身が記事を作成・検証できるため一次情報なしでも高い価値を提供できる。",
-      "probe_keywords": [
-        "ChatGPT 業務効率化",
-        "Claude プロンプト",
-        "AI 議事録 自動化",
-        "Notion AI 活用術",
-        "Copilot 使い方",
-        "プロンプト テンプレート"
-      ],
-      "signals": [
+      "genre": "生成AIの業務活用",
+      "demand": 8,
+      "competition": 8,
+      "trend": "up",
+      "evidence": "TDB 2026年調査: 活用企業34.5%、課題は情報の正確性50.4%・専門人材ノウハウ不足41.3%・活用すべき業務の範囲40.0%・情報漏洩33.5%。用途は文章の作成・要約・校正45.1%。総務省白書(令和8年版)では日本の業務利用で議事録・メール作成補助が約7割で最多。検索上位はAI業務効率化の解説記事が多く競合は多い。",
+      "sources": [
         {
-          "keyword": "ChatGPT 業務効率化",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "活用企業は34.5%、効果実感は高い一方で、正確性や運用ルールに課題(帝国データバンク調査リリース・財経新聞掲載)",
+          "url": "https://www.zaikei.co.jp/releases/3431085/"
         },
         {
-          "keyword": "Claude プロンプト",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "企業の生成AI活用、大企業は46.5%に 一方で半数が情報の正確性に懸念 帝国データバンク調査(ITmedia NEWS)",
+          "url": "https://www.itmedia.co.jp/news/article/2605/15/1260515115/"
         },
         {
-          "keyword": "AI 議事録 自動化",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "令和8年版 情報通信白書 生成AIの業務利用状況(総務省)",
+          "url": "https://www.soumu.go.jp/johotsusintokei/whitepaper/ja/r08/text/nd121130.txt"
         },
         {
-          "keyword": "Notion AI 活用術",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "生成AI 企業の活用状況|用途・課題・社内ルールを調査から整理(お名前.com ビジネスコンシェルジュ)",
+          "url": "https://www.onamae.com/business/article/335495/"
         },
         {
-          "keyword": "Copilot 使い方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "プロンプト テンプレート",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "実際のところ生成AIは何の仕事に役立っている? ITR調査(@IT)",
+          "url": "https://atmarkit.itmedia.co.jp/ait/spv/2503/17/news068.html"
         }
       ]
     },
     {
-      "genre": "Notion・デジタルツールによるタスク管理術",
-      "monetization": "paid_article",
-      "reason": "テンプレートの設計図や構築手順をテキストと構造化データで分かりやすく解説でき、ツール自体のアップデートに伴い継続的なネタ供給が見込める。",
-      "probe_keywords": [
-        "Notion テンプレート 自作",
-        "タスク管理 アプリ 比較",
-        "Obsidian 使い方",
-        "デジタル手帳 作り方",
-        "P.K.T.法 タスク管理",
-        "仕事 効率化 ツール"
-      ],
-      "signals": [
+      "genre": "副業・ビジネスノウハウ全般(note有料記事)",
+      "demand": 7,
+      "competition": 9,
+      "trend": "flat",
+      "evidence": "サングローブの解説ではビジネス・副業系ノウハウが需要の高いジャンルとされ、ビジネス知識・副業ノウハウの相場は1,000〜3,000円、初心者は500〜800円推奨。体験談が重視されるとされ、一次体験のないAI執筆では差別化しにくい。",
+      "sources": [
         {
-          "keyword": "Notion テンプレート 自作",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "noteで売れる人気ジャンル(サングローブ)",
+          "url": "https://www.sungrove.co.jp/note-best-selling-genres/"
         },
         {
-          "keyword": "タスク管理 アプリ 比較",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "Obsidian 使い方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "デジタル手帳 作り方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "P.K.T.法 タスク管理",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "仕事 効率化 ツール",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "note有料記事の書き方・相場(サングローブ)",
+          "url": "https://www.sungrove.co.jp/note-paid-article/"
         }
       ]
     },
     {
-      "genre": "Webライティング・SEO記事構成テンプレート",
-      "monetization": "paid_article",
-      "reason": "文章術や構成案のフレームワークは普遍的かつ論理的なため、AIによる高品質な解説記事の量産が可能。副業層からの需要も安定している。",
-      "probe_keywords": [
-        "Webライティング 構成案",
-        "SEO 記事 書き方",
-        "セールスライティング テンプレート",
-        "文章構成 フレームワーク",
-        "ブログ 記事ネタ 探し方",
-        "リライト 手順"
-      ],
-      "signals": [
+      "genre": "Kindle出版(KDP)ノウハウ",
+      "demand": 5,
+      "competition": 8,
+      "trend": "flat",
+      "evidence": "検索結果上位に同種の解説記事(副業・KDP収益化)が多数並び競合が多い。出版の実体験が価値の中心で、AIのみでの差別化は難しいと判断。",
+      "sources": [
         {
-          "keyword": "Webライティング 構成案",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "SEO 記事 書き方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "セールスライティング テンプレート",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "文章構成 フレームワーク",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "ブログ 記事ネタ 探し方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "リライト 手順",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "検索結果例: AIで電子書籍 Kindle を出版する副業",
+          "url": "https://atsoho.com/blog/ai-kindle-publishing"
         }
       ]
     },
     {
-      "genre": "個人開発・ノーコードツールでのミニアプリ制作",
-      "monetization": "paid_article",
-      "reason": "BubbleやFlutterFlow、Makeなどのノーコードツールに関する手順書は需要が高く、エラー解決策や連携レシピなどネタが尽きない。",
-      "probe_keywords": [
-        "Bubble 使い方",
-        "FlutterFlow 入門",
-        "Make 連携 自動化",
-        "Zapier 代替 ノーコード",
-        "個人開発 アイデア",
-        "Webアプリ 自作 ツール"
-      ],
-      "signals": [
+      "genre": "スプレッドシート・GASによる業務自動化",
+      "demand": 6,
+      "competition": 7,
+      "trend": "flat",
+      "evidence": "検索上位にマネーフォワード等の企業メディアやスクール系の解説が多い。手順解説はAIでも書けるが、コードの動作検証が必要で自動運用のリスクがある。",
+      "sources": [
         {
-          "keyword": "Bubble 使い方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "FlutterFlow 入門",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "Make 連携 自動化",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "Zapier 代替 ノーコード",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "個人開発 アイデア",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "Webアプリ 自作 ツール",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
+          "title": "検索結果例: Google Apps Script 解説(マネーフォワード クラウド)",
+          "url": "https://biz.moneyforward.com/work-efficiency/basic/19666/"
         }
       ]
     },
     {
-      "genre": "思考法・フレームワークを活用した課題解決",
-      "monetization": "paid_article",
-      "reason": "ビジネス書や心理学の知見を構造化して解説するジャンル。普遍的なテーマであり、AIの高度な要約・構成力によって説得力のある記事を継続生産できる。",
-      "probe_keywords": [
-        "ロジカルシンキング 鍛え方",
-        "フレームワーク ビジネス",
-        "問題解決 思考法",
-        "意思決定 プロセス",
-        "メタ認知 高め方",
-        "第一原理思考"
-      ],
-      "signals": [
-        {
-          "keyword": "ロジカルシンキング 鍛え方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "フレームワーク ビジネス",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "問題解決 思考法",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "意思決定 プロセス",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "メタ認知 高め方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "第一原理思考",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        }
-      ]
-    },
-    {
-      "genre": "Kindle出版・電子書籍マーケティングノウハウ",
-      "monetization": "paid_article",
-      "reason": "個人出版のプロセスや表紙デザインのコツ、Amazonアルゴリズムの考察など、ノウハウの展開がしやすく、副業に関心を持つ読者層から継続的に購入されやすい。",
-      "probe_keywords": [
-        "Kindle出版 やり方",
-        "KDP マーケティング",
-        "電子書籍 表紙 作り方",
-        "Amazon ランキング 上位",
-        "個人出版 印税 生活",
-        "KDP セール 戦略"
-      ],
-      "signals": [
-        {
-          "keyword": "Kindle出版 やり方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "KDP マーケティング",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "電子書籍 表紙 作り方",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "Amazon ランキング 上位",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "個人出版 印税 生活",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        },
-        {
-          "keyword": "KDP セール 戦略",
-          "total_articles": 0,
-          "top10_avg_likes": 0,
-          "median_likes": 0,
-          "recent_avg_likes": 0,
-          "paid_ratio": 0.0,
-          "paid_avg_price": 0,
-          "paid_avg_likes": 0,
-          "opportunity": 30.0
-        }
-      ]
+      "genre": "Notion等のタスク管理術",
+      "demand": 5,
+      "competition": 7,
+      "trend": "flat",
+      "evidence": "今回は詳細な需要データを確認できず。ツール仕様の変化が速く、未検証情報を書くリスクがあるため優先度を下げた。",
+      "sources": []
     }
   ]
 }
