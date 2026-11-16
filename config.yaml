@@ -1,0 +1,69 @@
+# ============================================================
+# 自動note 運用設定
+# 秘密情報(APIキー・トークン・Cookie)はここに書かず、
+# GitHub の Secrets(環境変数)に入れてください。
+# ============================================================
+
+# 全体の安全スイッチ
+run:
+  dry_run: false            # true: 公開・投稿を行わず、生成物だけ保存
+  kill_switch: false        # true: 何もせず終了(緊急停止用)
+  articles_per_run: 1       # 1回の実行で公開する記事数(1〜2推奨)
+  min_quality_score: 75     # 自己レビューの点数がこれ未満なら公開しない
+
+# 戦略(ジャンル・収益モデル)
+strategy:
+  # 空なら AI が候補を調査して自動選定する。固定したい場合は書く
+  fixed_genre: ""
+  # paid_article / affiliate / free_audience / auto
+  monetization: auto
+  # 戦略の見直し間隔(日)
+  review_interval_days: 30
+  # 選定候補を出すときの制約
+  constraints:
+    - 医療・投資の断定的助言など、規約や法令リスクの高いジャンルは避ける
+    - AIが一次情報なしで書いても価値が出るテーマを優先する
+    - 継続的に記事ネタが出るジャンルを優先する
+
+# 執筆
+writing:
+  model: claude-sonnet-5-5       # 執筆・レビューに使うモデル
+  research_model: claude-haiku-5-5  # 調査の要約など軽い処理
+  min_chars: 3000
+  max_chars: 7000
+  tone: "です・ます調。読者の悩みに寄り添い、具体例と手順を必ず入れる"
+  # 有料記事にする場合の価格候補(AI が選ぶ)
+  price_options: [300, 500, 980]
+  # 記事末尾に入れる定型文(プロフィール導線・AI利用の明記など)
+  footer: |
+    ---
+    この記事はAIを活用して作成し、公開前に自動チェックを行っています。
+    内容の誤りに気づいた場合はコメントで教えてください。
+
+# note
+note:
+  urlname: ""               # あなたの note の ID (https://note.com/<ここ>)
+  editor_url: "https://editor.note.com/new"
+  headless: true
+  # 公開時間帯の揺らぎ(分)。毎回同じ時刻にならないようにする
+  jitter_minutes: 40
+  # 有料記事の扱い。draft_only: 下書き保存して通知(推奨) / publish: 有料設定まで自動(実験的)
+  paid_mode: draft_only
+
+# SNS
+sns:
+  threads:
+    enabled: true
+    posts_per_article: 2     # 告知1本 + 切り口を変えた投稿1本
+  instagram:
+    enabled: true
+    # Instagram は画像のURLが公開されている必要がある。
+    # GitHub Pages 等で public/images を公開し、そのURLを書く
+    image_base_url: ""       # 例: https://<user>.github.io/auto-note/images
+  api_version_facebook: "v21.0"
+
+# 調査
+research:
+  seed_count: 8             # 1ジャンルあたり調べるキーワード数
+  results_per_query: 20
+  request_interval_sec: 2.0 # note への問い合わせ間隔(負荷をかけない)
