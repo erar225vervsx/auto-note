@@ -23,6 +23,7 @@ GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/models/{model}:ge
 # 無料枠は1分あたりの回数が少ないため、Gemini は呼び出し間隔を空ける
 GEMINI_MIN_INTERVAL = float(os.environ.get("GEMINI_MIN_INTERVAL", "15"))
 _last_gemini = 0.0
+_thinking_supported = True
 
 
 class LLMError(RuntimeError):
@@ -56,16 +57,25 @@ def _gemini(prompt, model, system, max_tokens, temperature, json_mode) -> str:
     _last_gemini = time.time()
     body: dict[str, Any] = {
         "contents": [{"role": "user", "parts": [{"text": prompt}]}],
-        # 思考(thinking)にも出力枠が使われるため、余裕を持たせる
-        "generationConfig": {"temperature": temperature, "maxOutputTokens": max_tokens + 8192},
+        # 思考(thinking)にも出力枠が使われるため少し余裕を持たせる
+        "generationConfig": {"temperature": temperature, "maxOutputTokens": max_tokens + 2048},
     }
     if system:
         body["systemInstruction"] = {"parts": [{"text": system}]}
-    if json_mode:
-        body["generationConfig"]["responseMimeType"] = "application/json"
-    r = requests.post(GEMINI_URL.format(model=model), json=body, timeout=300,
-                      headers={"x-goog-api-key": env("GEMINI_API_KEY"),
-                               "content-type": "application/json"})
+    # JSONモード(responseMimeType)は出力が止まらなくなる不具合があるため使わず、
+    # プロンプトで指示してパースする。思考は軽めにして応答時間を抑える
+    global _thinking_supported
+    if _thinking_supported:
+        body["generationConfig"]["thinkingConfig"] = {"thinkingLevel": "low"}
+    headers = {"x-goog-api-key": env("GEMINI_API_KEY"), "content-type": "application/json"}
+    t0 = time.time()
+    r = requests.post(GEMINI_URL.format(model=model), json=body, timeout=180, headers=headers)
+    if r.status_code == 400 and _thinking_supported and "thinking" in r.text.lower():
+        # 思考レベルの指定に対応していないモデルなら、指定なしでやり直す
+        _thinking_supported = False
+        body["generationConfig"].pop("thinkingConfig", None)
+        r = requests.post(GEMINI_URL.format(model=model), json=body, timeout=180, headers=headers)
+    log.info("Gemini %s: %s (%.0f秒)", model, r.status_code, time.time() - t0)
     if r.status_code in (429, 500, 502, 503, 504):
         raise LLMError(f"retryable {r.status_code}: {r.text[:200]}")
     r.raise_for_status()
