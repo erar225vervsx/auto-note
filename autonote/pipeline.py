@@ -184,11 +184,19 @@ def promote(cfg: dict) -> None:
     if rec.get("status") == "published":
         log.info("すでに告知済みです: %s", slug)
         return
+    rec.update(url=url, published_at=rec.get("published_at") or now().isoformat())
+    if not sns.configured() and not os.environ.get("AUTONOTE_FAKE_SNS"):
+        # SNS がまだ設定されていない: URL だけ記録し、Issue は開いたままにする
+        rec["status"] = "published_no_sns"
+        articles_store.save(arts)
+        gh.comment(number, "📌 note の URL を記録しました。Threads / Instagram がまだ設定されていないため、"
+                           "告知は保留しています。設定が終わったら、この Issue にもう一度 URL をコメントしてください。")
+        return
     draft = (STATE_DIR / "drafts" / f"{slug}.md").read_text(encoding="utf-8")
     body_md = draft.split("\n\n", 1)[1] if "\n\n" in draft else draft
     article = {**rec, "body_md": body_md}
     sns.promote(article, url, slug, strategy_store.load(), cfg)
-    rec.update(status="published", url=url, published_at=now().isoformat())
+    rec["status"] = "published"
     articles_store.save(arts)
     gh.comment(number, f"✅ 受け付けました。Threads に告知し、Instagram の投稿を準備しました。\n{url}")
     gh.close(number)

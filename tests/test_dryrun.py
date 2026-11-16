@@ -33,7 +33,17 @@ def test_full_flow():
                                arts[0]["eyecatch"], load_config(), False)
     assert f"autonote:slug={slug}" in body and "Issue に note の URL" in body
 
-    # 2. note の URL がコメントされた: SNS 告知
+    # 2a. SNS 未設定のとき: URL だけ記録して保留(Issue は閉じない)
+    os.environ.update(ISSUE_NUMBER="1", ISSUE_BODY=body,
+                      COMMENT_BODY="公開しました https://note.com/tester/n/n1234abcd")
+    os.environ.pop("AUTONOTE_FAKE_SNS")
+    assert pipeline.main(["x", "promote"]) == 0
+    a0 = json.loads((st / "articles.json").read_text())[0]
+    assert a0["status"] == "published_no_sns" and a0["url"].endswith("n1234abcd")
+    assert not (st / "sns_posts.json").exists()
+    os.environ["AUTONOTE_FAKE_SNS"] = "1"
+
+    # 2b. note の URL がコメントされた: SNS 告知
     os.environ.update(ISSUE_NUMBER="1", ISSUE_BODY=body,
                       COMMENT_BODY="公開しました https://note.com/tester/n/n1234abcd")
     assert pipeline.main(["x", "promote"]) == 0

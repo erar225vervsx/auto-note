@@ -19,6 +19,12 @@ SNS_SYSTEM = (
 )
 
 
+def configured() -> bool:
+    """Threads か Instagram の少なくとも一方の認証情報が登録されているか。"""
+    return bool((os.environ.get("THREADS_USER_ID") and os.environ.get("THREADS_ACCESS_TOKEN"))
+                or (os.environ.get("IG_USER_ID") and os.environ.get("IG_ACCESS_TOKEN")))
+
+
 def _fake() -> bool:
     return bool(os.environ.get("AUTONOTE_FAKE_SNS"))
 
