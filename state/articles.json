@@ -261,7 +261,7 @@
     "eyecatch": "20261118-1751-998e11-eyecatch.png",
     "data_backed": true,
     "topic": "業務を工程に分け、入力してよい情報か・正しさを確かめられるか・間違えても取り返しがつくかの3つの質問で、生成AIに任せる/条件つき/任せないを判断する方法と業務例・判断メモ",
-    "status": "awaiting_publish",
+    "status": "published",
     "issue": 4,
     "ig_images": [
       "20261118-1751-998e11-ig-1.png",
@@ -271,6 +271,8 @@
       "20261118-1751-998e11-ig-5.png",
       "20261118-1751-998e11-ig-6.png",
       "20261118-1751-998e11-ig-7.png"
-    ]
+    ],
+    "url": "https://note.com/ai_kakunin/n/nbd0d3c34a14b",
+    "published_at": "2026-11-18T21:16:45.750488+09:00"
   }
 ]
