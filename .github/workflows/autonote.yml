@@ -6,16 +6,15 @@ on:
     paths: ["inbox/*.json"]  # Claude の定期タスクが記事を置いたら「公開待ち」Issue を作る
   schedule:
     - cron: "47 0 * * 1"      # 毎週月曜 9:47 JST: 週次レポート
-    - cron: "11 3 1,15 * *"   # 毎月1日・15日 12:11 JST: SNSトークン更新
   issue_comment:
-    types: [created]          # 公開待ち Issue に note の URL がコメントされたら SNS 告知
+    types: [created]          # 公開待ち Issue に note の URL がコメントされたら、投稿キットに Threads の投稿ボタンを出す
   workflow_dispatch:
     inputs:
       command:
-        description: "ingest / report / instagram / refresh-tokens / run(予備: Gemini で執筆) / strategy"
+        description: "ingest / kits / report / run(予備: Gemini で執筆) / strategy"
         default: "run"
       dry_run:
-        description: "true なら Issue 作成・SNS投稿をせずに生成物だけ作る"
+        description: "true なら Issue を作らずに生成物だけ作る"
         default: "false"
 
 permissions:
@@ -39,10 +38,6 @@ jobs:
     env:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-      THREADS_USER_ID: ${{ secrets.THREADS_USER_ID }}
-      THREADS_ACCESS_TOKEN: ${{ secrets.THREADS_ACCESS_TOKEN }}
-      IG_USER_ID: ${{ secrets.IG_USER_ID }}
-      IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
       NOTIFY_WEBHOOK_URL: ${{ secrets.NOTIFY_WEBHOOK_URL }}
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       DRY_RUN: ${{ github.event.inputs.dry_run || 'false' }}
@@ -66,7 +61,7 @@ jobs:
         env:
           INPUT_COMMAND: ${{ github.event.inputs.command }}
         run: |
-          case "$INPUT_COMMAND" in ingest|run|strategy|report|instagram|refresh-tokens|"") ;; *) echo "unknown command"; exit 1;; esac
+          case "$INPUT_COMMAND" in ingest|kits|run|strategy|report|"") ;; *) echo "unknown command"; exit 1;; esac
           if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
             echo "c=$INPUT_COMMAND" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event_name }}" = "push" ]; then
@@ -75,8 +70,6 @@ jobs:
             echo "c=promote" >> "$GITHUB_OUTPUT"
           elif [ "${{ github.event.schedule }}" = "47 0 * * 1" ]; then
             echo "c=report" >> "$GITHUB_OUTPUT"
-          elif [ "${{ github.event.schedule }}" = "11 3 1,15 * *" ]; then
-            echo "c=refresh-tokens" >> "$GITHUB_OUTPUT"
           else
             echo "c=ingest" >> "$GITHUB_OUTPUT"
           fi
@@ -85,28 +78,10 @@ jobs:
         run: python -m autonote.pipeline ${{ steps.cmd.outputs.c }}
 
       - name: Save state and images
-        if: always() && steps.cmd.outputs.c != 'refresh-tokens'
+        if: always()
         run: |
           git config user.name "autonote-bot"
           git config user.email "autonote-bot@users.noreply.github.com"
-          git add -A state public inbox
+          git add -A state public inbox docs
           git diff --cached --quiet || git commit -m "autonote: ${{ steps.cmd.outputs.c }} $(date -u +%F)"
           git push
-
-      - name: Post pending Instagram
-        if: success() && steps.cmd.outputs.c == 'promote'
-        run: |
-          sleep 90
-          python -m autonote.pipeline instagram
-          git add state && (git diff --cached --quiet || git commit -m "autonote: instagram") && git push
-
-      - name: Update SNS tokens in Secrets
-        if: steps.cmd.outputs.c == 'refresh-tokens'
-        env:
-          GH_TOKEN: ${{ secrets.GH_PAT }}
-        run: |
-          for k in THREADS_ACCESS_TOKEN IG_ACCESS_TOKEN; do
-            v=$(python -c "import json;print(json.load(open('/tmp/new_tokens.json')).get('$k',''))")
-            if [ -n "$v" ]; then echo "$v" | gh secret set "$k" --repo "$GITHUB_REPOSITORY"; fi
-          done
-          rm -f /tmp/new_tokens.json

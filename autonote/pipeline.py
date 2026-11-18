@@ -2,16 +2,16 @@
 
   python -m autonote.pipeline ingest       # inbox/ に置かれた記事(Claude が執筆)から「公開待ち」Issue 作成
   python -m autonote.pipeline run          # (予備) Gemini で 調査→執筆→「公開待ち」Issue 作成
-  python -m autonote.pipeline promote      # Issue に note の URL が返信されたら: SNS 投稿→Issue を閉じる
-  python -m autonote.pipeline instagram    # push後: 保留中の Instagram 投稿
+  python -m autonote.pipeline promote      # Issue に note の URL が返信されたら: 投稿キットに SNS 投稿ボタンを出す→Issue を閉じる
+  python -m autonote.pipeline kits         # 既存の記事すべての投稿キットを作り直す
   python -m autonote.pipeline strategy     # 戦略(ジャンル・収益モデル)を今すぐ選び直す
   python -m autonote.pipeline report       # 週次レポート
-  python -m autonote.pipeline refresh-tokens  # Threads/Instagram の長期トークン更新
 
-note は機械的な投稿を受け付けないため、公開だけは人が行う:
-  1. run が記事・見出し画像・タグを Issue「【公開待ち】…」にまとめる
-  2. 人が note に貼り付けて公開し、Issue に note の URL をコメントする
-  3. promote が自動で走り、Threads / Instagram に告知して Issue を閉じる
+投稿ボタンを押すのは人。Claude と GitHub Actions は下書きまでを用意する:
+  1. ingest が記事の「投稿キット」(GitHub Pages)と Issue「【公開待ち】…」を作る
+  2. 人がキットのボタンで note に貼り付けて公開し、Issue に note の URL をコメントする
+  3. promote がキットに Threads の投稿ボタン(公式の Web Intent)を出し、Issue を閉じる
+  4. 人がキットのボタンで Threads・Instagram に投稿する
 """
 from __future__ import annotations
 
@@ -23,7 +23,7 @@ import sys
 import traceback
 from pathlib import Path
 
-from . import analytics, gh, images, research, sns, writer
+from . import analytics, gh, images, kit, research, sns, writer
 from .core import ROOT, STATE_DIR, articles_store, load_config, log, now, setup_logging, strategy_store
 
 INBOX = Path(os.environ.get("AUTONOTE_INBOX_DIR", ROOT / "inbox"))
@@ -49,15 +49,12 @@ def issue_body(article: dict, slug: str, eyecatch_name: str, cfg: dict, data_bac
                   body, flags=re.M)
     tags = " ".join(f"#{t}" for t in article.get("tags", []))
     steps = [
-        "1. note で「投稿」→「テキスト」を開く",
-        "2. 下の「タイトル」と「本文」をコピーして貼り付ける",
-        f"3. 見出し画像に [この画像]({_image_url(cfg, eyecatch_name)}) を設定する",
-        f"4. 公開設定でハッシュタグ `{tags}` を入れる",
+        f"1. **[投稿キットを開く]({kit.kit_url(cfg, slug)})** → ボタンでタイトル・本文・見出し画像・タグをコピーして note に貼り付け、公開",
     ]
     if paid:
-        steps.append(f"5. 有料記事({article['price']}円)にして、✂️ の位置に有料ラインを置く")
-    steps.append(f"{len(steps) + 1}. 公開したら、**この Issue に note の URL だけをコメント**する"
-                 "(→ Threads / Instagram への告知が自動で始まります)")
+        steps.append(f"   - 有料記事({article['price']}円)。✂️ の位置に有料ラインを置く")
+    steps.append("2. 公開したら、**この Issue に note の URL だけをコメント**する"
+                 "(→ 1〜2分で投稿キットに Threads・Instagram の投稿ボタンが出ます)")
     review = article.get("review", {})
     sources = article.get("sources") or []
     src_lines = (["", "## 調査の出典", *[f"- [{x.get('title') or x.get('url')}]({x.get('url')})" for x in sources[:10]]]
@@ -67,6 +64,8 @@ def issue_body(article: dict, slug: str, eyecatch_name: str, cfg: dict, data_bac
         "## 公開の手順", *steps, "",
         f"- 自己レビュー: {review.get('score', '?')}点 / 需要調査の根拠: {'あり(Google検索)' if data_backed else 'なし(AIの知識のみ)'}",
         f"- 種類: {'有料 ' + str(article['price']) + '円' if paid else '無料'}",
+        "",
+        f"- ハッシュタグ: {tags}",
         "",
         "## タイトル", "", article["title"], "",
         "## 本文", "", body, "",
@@ -153,23 +152,32 @@ def ingest(cfg: dict) -> int:
         record = {k: v for k, v in article.items() if k != "body_md"}
         record.update(slug=slug, created_at=now().isoformat(), eyecatch=eye.name, data_backed=backed,
                       topic=d.get("topic", article["title"]))
+        arts = articles_store.load()
+        arts.append(record)
+        articles_store.save(arts)
+        kit.build(record, body, cfg)  # Instagram 用の画像もここで作る(record に保存される)
         if cfg["run"]["dry_run"]:
             record["status"] = "dry_run"
         else:
             number = gh.create_issue(f"【公開待ち】{article['title']}",
                                      issue_body(article, slug, eye.name, cfg, backed))
             record.update(status="awaiting_publish", issue=number)
-            analytics.notify(f"📝 記事ができました。Issue #{number} の手順で note に公開してください: "
-                             f"{article['title']}")
-        arts = articles_store.load()
-        arts.append(record)
+            analytics.notify(f"📝 記事ができました。投稿キット: {kit.kit_url(cfg, slug)} "
+                             f"(Issue #{number}) {article['title']}")
+        arts[-1] = record
         articles_store.save(arts)
+        kit.write_index()
         p.unlink()
     return len(files)
 
 
+def _body_of(slug: str) -> str:
+    draft = (STATE_DIR / "drafts" / f"{slug}.md").read_text(encoding="utf-8")
+    return draft.split("\n\n", 1)[1] if "\n\n" in draft else draft
+
+
 def promote(cfg: dict) -> None:
-    """Issue に note の URL がコメントされたときに走る。"""
+    """Issue に note の URL がコメントされたときに走る。SNS への投稿は人がキットのボタンで行う。"""
     number = int(os.environ["ISSUE_NUMBER"])
     m_url = NOTE_URL_RE.search(os.environ.get("COMMENT_BODY", ""))
     m_slug = SLUG_RE.search(os.environ.get("ISSUE_BODY", ""))
@@ -181,39 +189,36 @@ def promote(cfg: dict) -> None:
     rec = next((a for a in arts if a.get("slug") == slug), None)
     if not rec:
         raise RuntimeError(f"記事 {slug} の記録が見つかりません")
-    if rec.get("status") == "published":
-        log.info("すでに告知済みです: %s", slug)
-        return
-    rec.update(url=url, published_at=rec.get("published_at") or now().isoformat())
-    if not sns.configured() and not os.environ.get("AUTONOTE_FAKE_SNS"):
-        # SNS がまだ設定されていない: URL だけ記録し、Issue は開いたままにする
-        rec["status"] = "published_no_sns"
-        articles_store.save(arts)
-        gh.comment(number, "📌 note の URL を記録しました。Threads / Instagram がまだ設定されていないため、"
-                           "告知は保留しています。設定が終わったら、この Issue にもう一度 URL をコメントしてください。")
-        return
-    draft = (STATE_DIR / "drafts" / f"{slug}.md").read_text(encoding="utf-8")
-    body_md = draft.split("\n\n", 1)[1] if "\n\n" in draft else draft
-    article = {**rec, "body_md": body_md}
-    sns.promote(article, url, slug, strategy_store.load(), cfg)
-    rec["status"] = "published"
+    rec.update(url=url, published_at=rec.get("published_at") or now().isoformat(), status="published")
+    if not rec.get("sns"):
+        rec["sns"] = sns.make_copy({**rec, "body_md": _body_of(slug)}, url, strategy_store.load(), cfg)
+    kit.build(rec, _body_of(slug), cfg, note_url=url)
     articles_store.save(arts)
-    gh.comment(number, f"✅ 受け付けました。Threads に告知し、Instagram の投稿を準備しました。\n{url}")
+    kit.write_index()
+    links = "\n".join(f"- [Threadsで投稿 {i + 1}本目]({p['intent']})"
+                      for i, p in enumerate(kit.load(slug)["threads"]) if p.get("intent"))
+    gh.comment(number, "✅ note の URL を記録しました。下のボタンを押すと、文面が入った状態で Threads が開きます"
+                       "(画像つきの Instagram は投稿キットから)。\n\n"
+                       f"{links}\n- [投稿キット(Instagram もここから)]({kit.kit_url(cfg, slug)})")
     gh.close(number)
 
 
-def refresh_tokens() -> None:
-    """更新したトークンを state 外の一時ファイルに書き出す(ワークフローが Secrets を更新する)。"""
-    out = {}
-    for name, fn in (("THREADS_ACCESS_TOKEN", sns.refresh_threads_token),
-                     ("IG_ACCESS_TOKEN", sns.refresh_ig_token)):
-        try:
-            out[name] = fn()
-        except Exception as e:  # noqa: BLE001
-            log.error("%s の更新に失敗: %s", name, e)
-    with open("/tmp/new_tokens.json", "w") as f:
-        json.dump(out, f)
-    log.info("更新できたトークン: %s", list(out))
+def rebuild_kits(cfg: dict) -> int:
+    """既存の記事すべての投稿キットを作り直す。"""
+    arts = articles_store.load()
+    n = 0
+    for rec in arts:
+        if rec.get("status") in ("rejected", "dry_run") or not rec.get("slug"):
+            continue
+        if not (STATE_DIR / "drafts" / f"{rec['slug']}.md").exists():
+            continue
+        kit.build(rec, _body_of(rec["slug"]), cfg, note_url=rec.get("url"))
+        if rec.get("status") == "published_no_sns":
+            rec["status"] = "published"
+        n += 1
+    articles_store.save(arts)
+    kit.write_index()
+    return n
 
 
 def main(argv: list[str]) -> int:
@@ -227,9 +232,8 @@ def main(argv: list[str]) -> int:
             run(cfg)
         elif cmd == "promote":
             promote(cfg)
-        elif cmd == "instagram":
-            n = sns.flush_instagram(cfg)
-            log.info("Instagram 投稿: %d件", n)
+        elif cmd == "kits":
+            log.info("作り直したキット: %d件", rebuild_kits(cfg))
         elif cmd == "strategy":
             s = research.select_strategy(cfg)
             analytics.notify(f"🧭 戦略を更新: {s['genre']} / {s['monetization']}"
@@ -237,8 +241,6 @@ def main(argv: list[str]) -> int:
                              f"{s.get('reason', '')}")
         elif cmd == "report":
             analytics.notify(analytics.write_report())
-        elif cmd == "refresh-tokens":
-            refresh_tokens()
         else:
             print(__doc__)
             return 2

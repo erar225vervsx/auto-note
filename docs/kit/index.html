@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>投稿キット｜AIチェック係</title>
+<style>
+  :root { --bg:#faf6ee; --card:#fff; --ink:#222; --sub:#6e6860; --acc:#e85d3f; --ok:#168052; --line:#e8e1d4; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+  main { max-width:720px; margin:0 auto; padding:20px 16px 64px; }
+  h1 { font-size:20px; margin:0 0 4px; }
+  .meta { color:var(--sub); font-size:14px; margin-bottom:16px; }
+  section { background:var(--card); border:1px solid var(--line); border-radius:14px; padding:16px; margin:14px 0; }
+  h2 { font-size:17px; margin:0 0 10px; display:flex; align-items:center; gap:8px; }
+  h2 .n { background:var(--acc); color:#fff; border-radius:50%; width:26px; height:26px; display:inline-flex; align-items:center; justify-content:center; font-size:14px; flex:none; }
+  .row { display:flex; flex-wrap:wrap; gap:8px; margin:8px 0; }
+  button, a.btn { appearance:none; border:0; border-radius:10px; background:var(--ink); color:#fff; padding:12px 14px; font-size:15px; font-weight:600; text-decoration:none; cursor:pointer; min-height:44px; display:inline-flex; align-items:center; }
+  button.sec, a.btn.sec { background:#efe8dc; color:var(--ink); }
+  a.btn.acc, button.acc { background:var(--acc); }
+  button.done { background:var(--ok); }
+  .hint { color:var(--sub); font-size:13px; margin:6px 0 0; }
+  .wait { background:#fff7e8; border:1px dashed #e0b56b; padding:10px 12px; border-radius:10px; font-size:14px; }
+  .post { border:1px solid var(--line); border-radius:10px; padding:10px 12px; margin:10px 0; white-space:pre-wrap; font-size:14px; }
+  img.thumb { width:100%; border-radius:10px; border:1px solid var(--line); }
+  .grid { display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; }
+  .grid img { width:100%; border-radius:6px; border:1px solid var(--line); }
+  details { margin-top:8px; } summary { cursor:pointer; color:var(--sub); font-size:14px; }
+  .preview { font-size:14px; max-height:320px; overflow:auto; border-top:1px solid var(--line); margin-top:8px; padding-top:8px; }
+  ul.list { list-style:none; padding:0; margin:0; }
+  ul.list li { padding:10px 0; border-bottom:1px solid var(--line); }
+  ul.list a { color:var(--ink); font-weight:600; text-decoration:none; }
+  .tag { display:inline-block; font-size:12px; padding:2px 8px; border-radius:99px; background:#efe8dc; color:var(--sub); margin-left:6px; }
+  .toast { position:fixed; left:50%; bottom:20px; transform:translateX(-50%); background:var(--ink); color:#fff; padding:10px 16px; border-radius:99px; font-size:14px; opacity:0; transition:opacity .2s; pointer-events:none; }
+  .toast.show { opacity:.95; }
+</style>
+</head>
+<body>
+<main id="app"><p>読み込み中…</p></main>
+<div class="toast" id="toast"></div>
+<script>
+const $ = (s, el = document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const app = $("#app");
+const params = new URLSearchParams(location.search);
+const slug = params.get("a");
+const STATUS = { awaiting_publish: "note公開待ち", published_no_sns: "SNS待ち", published: "公開済み", rejected: "見送り", dry_run: "試運転" };
+
+function toast(msg) { const t = $("#toast"); t.textContent = msg; t.classList.add("show"); setTimeout(() => t.classList.remove("show"), 1600); }
+function mark(btn, label) { btn.classList.add("done"); btn.textContent = "✓ " + label; }
+
+async function copyText(text, btn, label) {
+  try { await navigator.clipboard.writeText(text); mark(btn, label); toast("コピーしました"); }
+  catch (e) { prompt("コピーできませんでした。長押しでコピーしてください", text); }
+}
+async function copyRich(html, text, btn, label) {
+  try {
+    if (window.ClipboardItem) {
+      await navigator.clipboard.write([new ClipboardItem({
+        "text/html": new Blob([html], { type: "text/html" }),
+        "text/plain": new Blob([text], { type: "text/plain" }) })]);
+    } else { await navigator.clipboard.writeText(text); }
+    mark(btn, label); toast("見出しつきでコピーしました");
+  } catch (e) { await copyText(text, btn, label); }
+}
+
+// 共有シートはボタンを押した直後に呼ぶ必要があるため、画像は先に読み込んでおく
+const fileCache = {};
+async function prefetch(urls) {
+  await Promise.all(urls.map(async (u, i) => {
+    try { const b = await (await fetch(u)).blob(); fileCache[u] = new File([b], `image-${i + 1}.png`, { type: "image/png" }); } catch (e) {}
+  }));
+}
+function shareFiles(urls, btn, label) {
+  const files = urls.map(u => fileCache[u]).filter(Boolean);
+  if (files.length && navigator.canShare && navigator.canShare({ files })) {
+    navigator.share({ files }).then(() => mark(btn, label)).catch(() => {});
+  } else {
+    urls.forEach(u => window.open(u, "_blank"));
+    toast("画像を開きました。長押しで保存してください");
+  }
+}
+
+async function showList() {
+  const items = await (await fetch("../kits/index.json", { cache: "no-store" })).json();
+  app.innerHTML = `<h1>投稿キット一覧</h1><p class="meta">新しい順。記事を選ぶと、note・Threads・Instagram に投稿するためのボタンが開きます。</p>
+    <section><ul class="list">${items.map(a => `<li><a href="?a=${encodeURIComponent(a.slug)}">${esc(a.title)}</a>
+      <span class="tag">${esc(STATUS[a.status] || a.status)}</span>${a.format === "paid" ? '<span class="tag">有料</span>' : ""}</li>`).join("") || "<li>まだありません</li>"}</ul></section>`;
+}
+
+async function showKit() {
+  const k = await (await fetch(`../kits/${encodeURIComponent(slug)}.json`, { cache: "no-store" })).json();
+  const paid = k.format === "paid";
+  const tags = (k.tags || []).map(t => "#" + t).join(" ");
+  const ig = k.instagram || { images: [], caption: "" };
+  prefetch([k.eyecatch, ...ig.images].filter(Boolean));
+
+  const threadsHtml = k.note_url
+    ? (k.threads || []).map((p, i) => `<div class="post">${esc(p.text)}</div>
+        <div class="row"><a class="btn acc" href="${esc(p.intent)}" target="_blank" rel="noopener">Threadsで投稿 ${i + 1}本目${i === 0 ? "(記事リンクつき)" : ""}</a></div>`).join("")
+      : `<div class="wait">note に公開して、公開待ちページ(GitHub の Issue)に URL をコメントすると、ここに投稿ボタンが出ます。</div>`;
+
+  app.innerHTML = `
+  <p class="meta"><a href="./" style="color:inherit">← 一覧</a></p>
+  <h1>${esc(k.title)}</h1>
+  <p class="meta">${paid ? `有料 ${k.price}円` : "無料"}${k.note_url ? ` ・ <a href="${esc(k.note_url)}" target="_blank">公開した記事</a>` : ""}</p>
+
+  <section>
+    <h2><span class="n">1</span>note に投稿</h2>
+    <div class="row"><a class="btn sec" href="https://note.com/notes/new" target="_blank" rel="noopener">note の投稿画面を開く</a></div>
+    <div class="row">
+      <button id="cTitle">タイトルをコピー</button>
+      <button id="cBody">本文をコピー</button>
+    </div>
+    <p class="hint">本文は見出し・太字・箇条書きつきでコピーされます。note の本文欄に貼り付けてください。</p>
+    ${k.eyecatch ? `<div class="row"><button id="sEye" class="sec">見出し画像を保存</button></div><img class="thumb" src="${esc(k.eyecatch)}" alt="見出し画像">` : ""}
+    <div class="row" style="margin-top:12px"><button id="cTags" class="sec">ハッシュタグをコピー</button></div>
+    <p class="hint">公開設定のハッシュタグ欄に、1つずつ入力してください:${esc(tags)}</p>
+    ${paid ? `<p class="hint">有料記事です。本文の「✂️ ここから有料」の位置に有料ラインを置き、価格を ${k.price}円 にしてください。</p>` : ""}
+    <details><summary>本文を確認する</summary><div class="preview">${k.body_html}</div></details>
+  </section>
+
+  <section>
+    <h2><span class="n">2</span>Threads に投稿</h2>
+    ${threadsHtml}
+    <p class="hint">ボタンを押すと Threads が開き、文面が入った状態になります。「投稿」を押すだけです。</p>
+  </section>
+
+  <section>
+    <h2><span class="n">3</span>Instagram に投稿</h2>
+    ${ig.images.length ? `<div class="grid">${ig.images.map(u => `<img src="${esc(u)}" alt="">`).join("")}</div>
+    <div class="row" style="margin-top:10px"><button id="cCap">① キャプションをコピー</button><button id="sIg" class="acc">② 画像を共有</button></div>
+    <p class="hint">② で共有先に Instagram を選ぶと、画像が選ばれた状態で開きます(出ない場合は「画像を保存」してから Instagram で選択)。キャプション欄に貼り付けて「シェア」を押します。</p>
+    <details><summary>キャプションを確認する</summary><div class="post">${esc(ig.caption)}</div></details>`
+    : `<p class="hint">この記事には Instagram 用の画像がありません。</p>`}
+  </section>`;
+
+  const tmp = document.createElement("div"); tmp.innerHTML = k.body_html;
+  $("#cTitle").onclick = e => copyText(k.title, e.target, "タイトル");
+  $("#cBody").onclick = e => copyRich(k.body_html, tmp.innerText, e.target, "本文");
+  $("#cTags").onclick = e => copyText(tags, e.target, "タグ");
+  if ($("#sEye")) $("#sEye").onclick = e => shareFiles([k.eyecatch], e.target, "見出し画像");
+  if ($("#cCap")) $("#cCap").onclick = e => copyText(ig.caption, e.target, "キャプション");
+  if ($("#sIg")) $("#sIg").onclick = e => shareFiles(ig.images, e.target, "画像");
+}
+
+(slug ? showKit() : showList()).catch(e => { app.innerHTML = `<p>読み込めませんでした(${esc(e.message)})。少し待ってから再読み込みしてください。</p>`; });
+</script>
+</body>
+</html>

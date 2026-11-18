@@ -46,13 +46,12 @@ note:
   urlname: ai_kakunin        # https://note.com/ai_kakunin
   creator_name: "AIチェック係｜生成AIを仕事で正しく使う"
 
-# SNS
+# 投稿キット(GitHub Pages で公開。note・Threads・Instagram へはここのボタンから人が投稿する)
+kit:
+  page_url: "https://erar225vervsx.github.io/auto-note/kit"
+  image_base_url: "https://raw.githubusercontent.com/erar225vervsx/auto-note/main/public/images"
+
+# 旧設定(Instagram 画像の公開URL)。投稿キットと同じ値
 sns:
-  threads:
-    enabled: true
-    posts_per_article: 2     # 告知1本 + 切り口を変えた投稿1本
   instagram:
-    enabled: true
-    # Instagram は画像のURLが公開されている必要がある(公開リポジトリの raw URL を使う)
     image_base_url: "https://raw.githubusercontent.com/erar225vervsx/auto-note/main/public/images"
-  api_version_facebook: "v21.0"

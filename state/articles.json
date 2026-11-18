@@ -51,10 +51,19 @@
     "eyecatch": "20261116-1914-92b40d-eyecatch.png",
     "data_backed": true,
     "topic": "生成AIの出力を仕事で使う前の確認手順(確認レベルの3段階・5ステップ・確認用プロンプト・場面別の重点)",
-    "status": "published_no_sns",
+    "status": "published",
     "issue": 1,
     "url": "https://note.com/ai_kakunin/n/nfe70aa0b074e",
-    "published_at": "2026-11-16T19:48:55.163768+09:00"
+    "published_at": "2026-11-16T19:48:55.163768+09:00",
+    "ig_images": [
+      "20261116-1914-92b40d-ig-1.png",
+      "20261116-1914-92b40d-ig-2.png",
+      "20261116-1914-92b40d-ig-3.png",
+      "20261116-1914-92b40d-ig-4.png",
+      "20261116-1914-92b40d-ig-5.png",
+      "20261116-1914-92b40d-ig-6.png",
+      "20261116-1914-92b40d-ig-7.png"
+    ]
   },
   {
     "title": "少人数の職場で作る生成AI利用ルール A4一枚の作り方",
@@ -112,10 +121,19 @@
     "eyecatch": "20261117-1553-e99e4f-eyecatch.png",
     "data_backed": true,
     "topic": "少人数の職場向けに、生成AIの利用ルールをA4一枚で作る7項目・5手順と記入例",
-    "status": "published_no_sns",
+    "status": "published",
     "issue": 2,
     "url": "https://note.com/ai_kakunin/n/neb06e19b0fe9",
-    "published_at": "2026-11-17T16:01:00.958992+09:00"
+    "published_at": "2026-11-17T16:01:00.958992+09:00",
+    "ig_images": [
+      "20261117-1553-e99e4f-ig-1.png",
+      "20261117-1553-e99e4f-ig-2.png",
+      "20261117-1553-e99e4f-ig-3.png",
+      "20261117-1553-e99e4f-ig-4.png",
+      "20261117-1553-e99e4f-ig-5.png",
+      "20261117-1553-e99e4f-ig-6.png",
+      "20261117-1553-e99e4f-ig-7.png"
+    ]
   },
   {
     "title": "生成AIで議事録を作る手順 抜けと誤りを防ぐ確認のコツ",
@@ -173,10 +191,19 @@
     "eyecatch": "20261118-1151-4d2c62-eyecatch.png",
     "data_backed": true,
     "topic": "生成AIで議事録を作るときの準備・指示文・確認手順(決定事項と案の混同、数字・固有名詞・発言者の誤りを防ぐ)",
-    "status": "published_no_sns",
+    "status": "published",
     "issue": 3,
     "url": "https://note.com/ai_kakunin/n/n777a117e27eb",
-    "published_at": "2026-11-18T16:33:05.786847+09:00"
+    "published_at": "2026-11-18T16:33:05.786847+09:00",
+    "ig_images": [
+      "20261118-1151-4d2c62-ig-1.png",
+      "20261118-1151-4d2c62-ig-2.png",
+      "20261118-1151-4d2c62-ig-3.png",
+      "20261118-1151-4d2c62-ig-4.png",
+      "20261118-1151-4d2c62-ig-5.png",
+      "20261118-1151-4d2c62-ig-6.png",
+      "20261118-1151-4d2c62-ig-7.png"
+    ]
   },
   {
     "title": "生成AIに任せる仕事・任せない仕事 迷わない3つの質問",
@@ -235,6 +262,15 @@
     "data_backed": true,
     "topic": "業務を工程に分け、入力してよい情報か・正しさを確かめられるか・間違えても取り返しがつくかの3つの質問で、生成AIに任せる/条件つき/任せないを判断する方法と業務例・判断メモ",
     "status": "awaiting_publish",
-    "issue": 4
+    "issue": 4,
+    "ig_images": [
+      "20261118-1751-998e11-ig-1.png",
+      "20261118-1751-998e11-ig-2.png",
+      "20261118-1751-998e11-ig-3.png",
+      "20261118-1751-998e11-ig-4.png",
+      "20261118-1751-998e11-ig-5.png",
+      "20261118-1751-998e11-ig-6.png",
+      "20261118-1751-998e11-ig-7.png"
+    ]
   }
 ]
