@@ -13,6 +13,7 @@ from .core import env, log
 
 API = "https://api.github.com"
 LABEL = "note公開待ち"
+DONE_LABEL = "公開済み"
 
 
 def _fake() -> bool:
@@ -44,7 +45,13 @@ def comment(number: int, body: str) -> None:
 
 
 def close(number: int) -> None:
+    """公開済みにして閉じる: ラベルを「公開済み」に替え、タイトルの【公開待ち】も【公開済み】にする。"""
     if _fake():
         log.info("[fake] Issue #%s を閉じる", number)
         return
-    _req("PATCH", f"/issues/{number}", json={"state": "closed", "state_reason": "completed"})
+    title = _req("GET", f"/issues/{number}").get("title", "")
+    _req("PATCH", f"/issues/{number}", json={
+        "state": "closed", "state_reason": "completed",
+        "labels": [DONE_LABEL],
+        "title": title.replace("【公開待ち】", "【公開済み】"),
+    })
