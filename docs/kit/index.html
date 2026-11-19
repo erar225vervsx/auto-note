@@ -98,7 +98,8 @@ async function showKit() {
 
   const threadsHtml = k.note_url
     ? (k.threads || []).map((p, i) => `<div class="post">${esc(p.text)}</div>
-        <div class="row"><a class="btn acc" href="${esc(p.intent)}" target="_blank" rel="noopener">Threadsで投稿 ${i + 1}本目${i === 0 ? "(記事リンクつき)" : ""}</a></div>`).join("")
+        <div class="row"><a class="btn acc" href="${esc(p.intent)}" target="_blank" rel="noopener">Threadsで投稿 ${i + 1}本目${i === 0 ? "(記事リンクつき)" : ""}</a>
+        <button class="sec cThr" data-i="${i}">文面をコピー</button></div>`).join("")
       : `<div class="wait">note に公開して、公開待ちページ(GitHub の Issue)に URL をコメントすると、ここに投稿ボタンが出ます。</div>`;
 
   app.innerHTML = `
@@ -124,7 +125,7 @@ async function showKit() {
   <section>
     <h2><span class="n">2</span>Threads に投稿</h2>
     ${threadsHtml}
-    <p class="hint">ボタンを押すと Threads が開き、文面が入った状態になります。「投稿」を押すだけです。</p>
+    <p class="hint">ボタンを押すと Threads が開き、文面が入った状態になります。「投稿」を押すだけです。<br>Threads アプリで<b>いま選んでいるアカウント</b>で開きます。先にアプリで ai_kakunin に切り替えておいてください(プロフィールのアイコンを長押し)。うまくいかないときは「文面をコピー」して、Threads で貼り付けます。</p>
   </section>
 
   <section>
@@ -136,6 +137,10 @@ async function showKit() {
     : `<p class="hint">この記事には Instagram 用の画像がありません。</p>`}
   </section>`;
 
+  document.querySelectorAll(".cThr").forEach(b => b.onclick = () => {
+    const p = k.threads[+b.dataset.i];
+    copyText(p.text + (+b.dataset.i === 0 && k.note_url ? "\n" + k.note_url : ""), b, "コピー済み");
+  });
   const tmp = document.createElement("div"); tmp.innerHTML = k.body_html;
   $("#cTitle").onclick = e => copyText(k.title, e.target, "タイトル");
   $("#cBody").onclick = e => copyRich(k.body_html, tmp.innerText, e.target, "本文");
