@@ -53,5 +53,8 @@ kit:
 
 # 旧設定(Instagram 画像の公開URL)。投稿キットと同じ値
 sns:
+  threads:
+    handle: ai_kakunin          # https://www.threads.com/@ai_kakunin
   instagram:
+    handle: ai_kakunin          # https://www.instagram.com/ai_kakunin/
     image_base_url: "https://raw.githubusercontent.com/erar225vervsx/auto-note/main/public/images"
