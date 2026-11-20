@@ -83,6 +83,8 @@
 - `ig_cta`: 最後のカードの一文(30字以内)。
 - 宣伝臭を抑え、誇大表現・煽り・根拠のない数字は使わない。
 
+※ 本文(body_md)に表(| で区切る Markdown の表)は使わない。note は表を表示できないため。一覧は「- **項目**:説明」の箇条書きで書く。
+
 ## 6. inbox に置いて push
 
 `inbox/YYYYMMDD-短い英数字.json` を次の形で作り、`git commit -m "article: <タイトル>"` して main に push する。

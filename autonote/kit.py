@@ -11,6 +11,8 @@ import os
 from pathlib import Path
 from urllib.parse import quote
 
+import re
+
 import markdown as md
 
 from . import images
@@ -22,6 +24,31 @@ THREADS_INTENT = "https://www.threads.com/intent/post"
 
 def _base(cfg: dict, key: str) -> str:
     return (cfg.get("kit", {}).get(key) or "").rstrip("/")
+
+
+def _cells(line: str) -> list[str]:
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+
+
+def tables_to_lists(text: str) -> str:
+    """note の本文は表に対応していないため、Markdown の表を箇条書きに直す。
+    1列目を太字の見出しにし、残りの列は「列名:値」で続ける。"""
+    lines, out, i = text.split("\n"), [], 0
+    while i < len(lines):
+        if (lines[i].lstrip().startswith("|") and i + 1 < len(lines)
+                and re.match(r"^\s*\|?\s*:?-{2,}", lines[i + 1])):
+            head = _cells(lines[i]); i += 2
+            rows = []
+            while i < len(lines) and lines[i].lstrip().startswith("|"):
+                rows.append(_cells(lines[i])); i += 1
+            out.append("")
+            for r in rows:
+                rest = [f"{h}:{v}" for h, v in zip(head[1:], r[1:]) if v and v not in ("—", "-", "ー")]
+                out.append(f"- **{r[0]}**" + ("  \n  " + "  \n  ".join(rest) if rest else ""))
+            out.append("")
+            continue
+        out.append(lines[i]); i += 1
+    return "\n".join(out)
 
 
 def kit_url(cfg: dict, slug: str) -> str:
@@ -57,7 +84,7 @@ def build(rec: dict, body_md: str, cfg: dict, note_url: str | None = None) -> Pa
         "price": rec.get("price", 0),
         "tags": rec.get("tags", []),
         "body_md": body_md,
-        "body_html": md.markdown(body_md.replace("<!-- PAYWALL -->", "\n\n---\n\n✂️ ここから有料\n\n---\n\n"),
+        "body_html": md.markdown(tables_to_lists(body_md).replace("<!-- PAYWALL -->", "\n\n---\n\n✂️ ここから有料\n\n---\n\n"),
                                  extensions=["extra", "sane_lists"]),
         "eyecatch": f"{img_base}/{rec['eyecatch']}" if rec.get("eyecatch") else None,
         "note_url": note_url,
