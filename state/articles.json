@@ -472,7 +472,9 @@
       "20261120-1152-f7fd53-ig-6.png",
       "20261120-1152-f7fd53-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 7
+    "status": "published",
+    "issue": 7,
+    "url": "https://note.com/ai_kakunin/n/n3743770b73ae",
+    "published_at": "2026-11-20T13:46:49.175932+09:00"
   }
 ]
