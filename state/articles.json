@@ -543,5 +543,84 @@
     "issue": 8,
     "url": "https://note.com/ai_kakunin/n/n880eeb97c846",
     "published_at": "2026-11-20T21:20:47.278012+09:00"
+  },
+  {
+    "title": "生成AIにExcelの数式を頼む 伝え方と確かめ方の手順",
+    "tags": [
+      "生成AI",
+      "ChatGPT",
+      "Excel",
+      "エクセル関数",
+      "AI活用",
+      "業務効率化",
+      "事務作業"
+    ],
+    "format": "free",
+    "price": 0,
+    "keyword": "生成AI Excel 数式 作り方 確認",
+    "review": {
+      "score": 81,
+      "reader": {
+        "score_before": 80,
+        "score_after": 88,
+        "fixed": [
+          "固定範囲と$参照の説明の食い違いを解消",
+          "機能名「数式の検証」とテーブル化の手順を明記",
+          "SUMIFSの数式例と言い直しの手本を追加",
+          "依頼文の型に表記ゆれの扱いを追加し、補助列での対処を説明",
+          "古いExcelでのエラー表示を#NAME?と添えて断定を和らげた"
+        ]
+      }
+    },
+    "sources": [
+      {
+        "title": "XLOOKUP 関数(Microsoft サポート)",
+        "url": "https://support.microsoft.com/ja-JP/excel/functions/xlookup-function"
+      },
+      {
+        "title": "Excel で数式エラーを検出する(Microsoft サポート)",
+        "url": "https://support.microsoft.com/ja-JP/excel/detect-formula-errors-in-excel"
+      },
+      {
+        "title": "【Excel】もうVLOOKUPには戻れない? 新定番「XLOOKUP」関数の使い方(@IT)",
+        "url": "https://atmarkit.itmedia.co.jp/ait/articles/2510/15/news017.html"
+      },
+      {
+        "title": "ChatGPTでExcel作業を効率化する方法と注意点(マネーフォワード クラウド)",
+        "url": "https://biz.moneyforward.com/ai/basic/2695/"
+      }
+    ],
+    "sns": {
+      "threads_posts": [
+        "生成AIに作ってもらったExcelの数式、そのまま使っていませんか?\n\n貼ってもエラーになる、動くけれど合計が少し合わない。原因の多くは、AIが「あなたの表」と「あなたのExcel」を知らないまま答えていることです。\n\n頼む前にそろえる4つの情報、そのまま使える依頼文の型、返ってきた数式を本番前に確かめる5つの手順をnoteにまとめました。",
+        "生成AIにExcelの数式を頼むとき、依頼文の最後に次の3つを足すと、確認がぐっと楽になります。\n\n・各部分が何をしているか日本語で説明して\n・前提にしていることを書き出して\n・この表での期待される結果を示して\n\nそのうえで、例外(空白・該当なし・重複)を混ぜた5〜10行のダミーの表に入れ、自分で手計算した答えと比べます。答え合わせの基準は、AIの示した結果ではなく自分の計算です。"
+      ],
+      "ig_points": [
+        "表の形とExcelの環境を先に伝える",
+        "例外のときにどうしたいかを決めておく",
+        "本物ではなくダミーの表で頼む",
+        "数式の説明を自分の言葉で言い直す",
+        "手計算した答えとダミーの表で比べる"
+      ],
+      "ig_caption": "生成AIにExcelの数式を作ってもらったのに、貼るとエラーになる。動いても合計が少し合わない。そんな経験はありませんか。\n\nAIは、あなたの表の形や使っているExcelのバージョンを知りません。だから頼む前に、やりたいこと・表の形・環境・例外の扱いの4つをそろえて伝えるのがコツです。\n\n本物のデータは貼らず、例外を混ぜた小さなダミーの表で頼み、返ってきた数式は手計算の答えと比べてから本番に使いましょう。\n\n詳しくはプロフィールのリンクから\n\n#生成AI #ChatGPT #AI活用 #Excel #エクセル #関数 #業務効率化 #仕事術 #事務職 #中小企業",
+      "ig_cta": "次の集計で、依頼文の型を試してみて"
+    },
+    "writer": "claude",
+    "slug": "20261121-1152-812cb1",
+    "created_at": "2026-11-21T11:52:48.610421+09:00",
+    "eyecatch": "20261121-1152-812cb1-eyecatch.png",
+    "data_backed": true,
+    "topic": "生成AIにExcelの数式を作ってもらうときの依頼の仕方(表の形・環境・例外・ダミーデータ)と、返ってきた数式の確認手順",
+    "ig_images": [
+      "20261121-1152-812cb1-ig-1.png",
+      "20261121-1152-812cb1-ig-2.png",
+      "20261121-1152-812cb1-ig-3.png",
+      "20261121-1152-812cb1-ig-4.png",
+      "20261121-1152-812cb1-ig-5.png",
+      "20261121-1152-812cb1-ig-6.png",
+      "20261121-1152-812cb1-ig-7.png"
+    ],
+    "status": "awaiting_publish",
+    "issue": 9
   }
 ]
