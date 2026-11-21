@@ -1,5 +1,12 @@
 [
  {
+  "slug": "20261121-1753-02a684",
+  "title": "生成AIの出力チェックリスト 業務別8枚と点検プロンプト",
+  "status": "awaiting_publish",
+  "format": "paid",
+  "created_at": "2026-11-21T17:53:43.351943+09:00"
+ },
+ {
   "slug": "20261121-1152-812cb1",
   "title": "生成AIにExcelの数式を頼む 伝え方と確かめ方の手順",
   "status": "published",
