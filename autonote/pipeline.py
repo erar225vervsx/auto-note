@@ -142,7 +142,7 @@ def ingest(cfg: dict) -> int:
             "tags": [t.lstrip("#") for t in d.get("tags", [])][:8],
             "format": "paid" if d.get("format") == "paid" else "free",
             "price": int(d.get("price") or 0), "keyword": d.get("keyword"),
-            "review": {"score": d.get("review_score")}, "sources": d.get("sources", []),
+            "review": {"score": d.get("review_score"), "reader": d.get("reader_review")}, "sources": d.get("sources", []),
             "sns": d.get("sns"), "writer": d.get("writer", "claude"),
         }
         (STATE_DIR / "drafts").mkdir(parents=True, exist_ok=True)
