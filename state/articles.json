@@ -693,7 +693,9 @@
       "20261121-1753-02a684-ig-6.png",
       "20261121-1753-02a684-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 10
+    "status": "published",
+    "issue": 10,
+    "url": "https://note.com/ai_kakunin/n/n236521289db4",
+    "published_at": "2026-11-21T18:07:36.682504+09:00"
   }
 ]
