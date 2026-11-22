@@ -697,5 +697,83 @@
     "issue": 10,
     "url": "https://note.com/ai_kakunin/n/n236521289db4",
     "published_at": "2026-11-21T18:07:36.682504+09:00"
+  },
+  {
+    "title": "生成AIの回答が毎回違って困るとき 仕事で使える安定させ方",
+    "tags": [
+      "生成AI",
+      "ChatGPT",
+      "AI活用",
+      "業務効率化",
+      "プロンプト",
+      "仕事術"
+    ],
+    "format": "free",
+    "price": 0,
+    "keyword": "生成AI 回答 毎回違う",
+    "review": {
+      "score": 82,
+      "reader": {
+        "score_before": 80,
+        "score_after": 88,
+        "fixed": [
+          "冒頭の「必ず」などの断定を弱めた",
+          "原因の順位づけを根拠のない言い切りから「一つ」に変更",
+          "個人設定・ツール/モデルをそろえる手順を追加",
+          "「ゼロにならない」に出典名を明記",
+          "結論が定まらないときは人が判断する逃げ道を追記"
+        ]
+      }
+    },
+    "sources": [
+      {
+        "title": "生成AIの回答が変わる理由とは?原因・回答を安定させる方法・企業利用のポイント(SHIFT AI EXECUTIVE)",
+        "url": "https://ai-keiei.shift-ai.co.jp/generative-ai-answer-difference/"
+      },
+      {
+        "title": "Why can generative AI tools be inconsistent in their responses to the same prompt?(NHS Knowledge & Library Hub)",
+        "url": "https://support.library.hee.nhs.uk/support/solutions/articles/27000122238"
+      },
+      {
+        "title": "生成AIのハルシネーション対策は?プロンプトの書き方やファクトチェック手順も解説(マネーフォワード クラウド)",
+        "url": "https://biz.moneyforward.com/ai/basic/7793/"
+      },
+      {
+        "title": "The Challenge of Consistency in Generative AI: Will We Adapt or Fix the System?(Blog@CACM)",
+        "url": "https://cacm.acm.org/blogcacm/the-challenge-of-consistency-in-generative-ai-will-we-adapt-or-fix-the-system"
+      }
+    ],
+    "sns": {
+      "threads_posts": [
+        "昨日と同じ頼み方をしたのに、生成AIの答えが違う。同僚に聞いたら結論まで違っていた。\n\nこれは故障ではなく、生成AIが言葉を確率で選んでいる仕組みからくる性質です。とはいえ、仕事では「毎回同じ形の答え」がほしい場面が多いですよね。\n\nnoteに、答えが変わる3つの理由と、ふだんのチャット画面でできる揺れを小さくする5つの手順をまとめました。",
+        "生成AIの答えをそろえたいときのコツを1つ。\n\n依頼文に次の5つを書き足してみてください。\n・目的(何を達成したいか)\n・前提(読み手は誰か)\n・材料(使ってよい日時や数字)\n・形式(文字数・文体)\n・やらないこと(推測の数字など)\n\nAIが自由に解釈できる余地が減るので、何度頼んでも答えの形がそろいやすくなります。うまくいった依頼文は、使ったツールとモデル名と一緒に保存しておくと次が楽です。"
+      ],
+      "ig_points": [
+        "答えが毎回違うのは故障ではなく仕組み",
+        "まず「揺れてよい仕事」と「困る仕事」を分ける",
+        "依頼文に目的・前提・材料・形式を書く",
+        "出力の型や見本を先に渡す",
+        "大事な答えは2〜3回聞き、違う部分を確認"
+      ],
+      "ig_caption": "生成AIに同じことを頼んだのに、昨日と答えが違う。同僚と結論が違う。そんな経験はありませんか。\n\n答えが変わるのは、生成AIが言葉を確率で選ぶ仕組みや、会話・設定・ツールの違いが原因です。仕事で困らないためには、頼み方をそろえるのが近道です。\n\n・揺れてよい仕事と困る仕事を分ける\n・目的・前提・材料・形式・やらないことを書く\n・出力の型や見本を渡す\n・ツール・モデル・設定をそろえる\n・大事な答えは複数回聞いて違う部分を確認\n\n詳しくはプロフィールのリンクから\n\n#生成AI #ChatGPT #AI活用 #業務効率化 #プロンプト #仕事術 #AI初心者 #働き方 #会社員 #スキルアップ",
+      "ig_cta": "頼み方をそろえて、答えをそろえよう"
+    },
+    "writer": "claude",
+    "slug": "20261122-1152-5ab288",
+    "created_at": "2026-11-22T11:52:17.882947+09:00",
+    "eyecatch": "20261122-1152-5ab288-eyecatch.png",
+    "data_backed": true,
+    "topic": "同じ依頼でも生成AIの答えが変わる理由(確率・会話や設定・ツール/モデル差)と、仕事で揺れを小さくする5手順・依頼文の型の残し方",
+    "ig_images": [
+      "20261122-1152-5ab288-ig-1.png",
+      "20261122-1152-5ab288-ig-2.png",
+      "20261122-1152-5ab288-ig-3.png",
+      "20261122-1152-5ab288-ig-4.png",
+      "20261122-1152-5ab288-ig-5.png",
+      "20261122-1152-5ab288-ig-6.png",
+      "20261122-1152-5ab288-ig-7.png"
+    ],
+    "status": "awaiting_publish",
+    "issue": 11
   }
 ]
