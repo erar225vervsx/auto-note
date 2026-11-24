@@ -1084,7 +1084,9 @@
       "20261124-1153-c2d8cb-ig-6.png",
       "20261124-1153-c2d8cb-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 15
+    "status": "published",
+    "issue": 15,
+    "url": "https://note.com/ai_kakunin/n/nf546baeca39e",
+    "published_at": "2026-11-24T16:23:50.545648+09:00"
   }
 ]
