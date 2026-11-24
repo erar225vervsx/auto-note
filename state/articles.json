@@ -854,8 +854,10 @@
       "20261122-1753-7587e5-ig-6.png",
       "20261122-1753-7587e5-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 12
+    "status": "published",
+    "issue": 12,
+    "url": "https://note.com/ai_kakunin/n/nd5489ce5ca65",
+    "published_at": "2026-11-24T16:21:30.694508+09:00"
   },
   {
     "title": "生成AIに貼る前に 社外秘と個人情報を伏せる6ステップ",
