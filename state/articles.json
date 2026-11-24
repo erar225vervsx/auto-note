@@ -932,8 +932,10 @@
       "20261123-1153-53d811-ig-6.png",
       "20261123-1153-53d811-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 13
+    "status": "published",
+    "issue": 13,
+    "url": "https://note.com/ai_kakunin/n/nd0b904f6d608",
+    "published_at": "2026-11-24T16:22:22.975240+09:00"
   },
   {
     "title": "生成AIで業務マニュアルを作る ベテランの暗黙知を引き出す手順",
