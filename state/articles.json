@@ -1005,8 +1005,10 @@
       "20261123-1752-0e9c90-ig-6.png",
       "20261123-1752-0e9c90-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 14
+    "status": "published",
+    "issue": 14,
+    "url": "https://note.com/ai_kakunin/n/n137a83c44698",
+    "published_at": "2026-11-24T16:23:08.569611+09:00"
   },
   {
     "title": "生成AIに文章の校正を頼む 直されすぎを防ぐ5つの手順",
