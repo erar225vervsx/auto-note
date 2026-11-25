@@ -1165,8 +1165,10 @@
       "20261124-1753-5a3ae1-ig-6.png",
       "20261124-1753-5a3ae1-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 16
+    "status": "published",
+    "issue": 16,
+    "url": "https://note.com/ai_kakunin/n/n3a50e71a075b",
+    "published_at": "2026-11-25T16:21:28.410635+09:00"
   },
   {
     "title": "生成AIで会議のアジェンダを作る 詰め込みすぎを防ぐ5手順",
