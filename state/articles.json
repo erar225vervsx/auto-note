@@ -1401,7 +1401,9 @@
       "20261126-1153-77ffe8-ig-6.png",
       "20261126-1153-77ffe8-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 19
+    "status": "published",
+    "issue": 19,
+    "url": "https://note.com/ai_kakunin/n/n076b1d37dbdb",
+    "published_at": "2026-11-26T14:28:42.707620+09:00"
   }
 ]
