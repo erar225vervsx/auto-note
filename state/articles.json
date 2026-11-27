@@ -1784,7 +1784,9 @@
       "20261127-1753-aa388e-ig-6.png",
       "20261127-1753-aa388e-ig-7.png"
     ],
-    "status": "awaiting_publish",
-    "issue": 24
+    "status": "published",
+    "issue": 24,
+    "url": "https://note.com/ai_kakunin/n/n16dd3d9290fe",
+    "published_at": "2026-11-27T20:16:35.567297+09:00"
   }
 ]
